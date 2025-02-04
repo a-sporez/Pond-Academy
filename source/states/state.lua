@@ -21,8 +21,8 @@ function State:switch(state)
 end
 
 -- lambda wrapper to set the running module as currentState
-function State:enableRunning()
-    self:switch(require('source.states.running'))
+function State:enableIntro()
+    self:switch(require('source.states.intro'))
 end
 
 -- lambda wrapper to set the menu module as currentState

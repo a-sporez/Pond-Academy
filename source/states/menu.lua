@@ -22,9 +22,20 @@ function Menu:enter()
         96,
         36,
         "PLAY",
-        function () state:enableRunning() end, -- lambda wrap game state.
+        function () state:enableIntro() end, -- lambda wrap game state.
         nil
     )
+
+    self.exitButton = button.new(
+        centre_x - offset_x,
+        centre_y + offset_y,
+        96,
+        36,
+        "EXIT",
+        love.event.quit,
+        nil
+    )
+
 end
 
 function Menu:update(dt)
@@ -35,12 +46,17 @@ function Menu:draw()
     -- TODO: remove semi-hardcoded values below
     love.graphics.print("menu state", 10, 10)
     self.playButton:draw(self.button_x, self.button_y, 14, 7)
+    self.exitButton:draw(self.button_x, self.button_y, 14, 7)
 end
 
 function Menu:mousepressed(x, y, button)
     if button == 1 and self.playButton then
         self.playButton:checkPressed(x, y, button)
         print("[DEBUG-MENU] playButton pressed")
+    end
+    if button == 1 and self.exitButton then
+        self.exitButton:checkPressed(x, y, button)
+        print("[DEBUG-MENU] exitButton pressed")
     end
 end
 
