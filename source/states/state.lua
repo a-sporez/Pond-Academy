@@ -71,3 +71,5 @@ function State:keyreleased(key)
         self.currentState:keyreleased()
     end
 end
+
+return State

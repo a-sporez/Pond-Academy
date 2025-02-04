@@ -1,3 +1,4 @@
+-- TODO: Create entry point for dialogue tree.
 local Running = {}
 
 function Running:enter()
