@@ -18,13 +18,49 @@ function Dialogue:new()
                 {text = "Enter Node 1", next = 'critter_1'},
                 {text = "Enter Node 2", next = 'critter_2'},
                 {text = "Enter Node 3", next = 'critter_3'},
-                {text = "Enter Node 4", next = 'critter_4'}
+                {text = "Enter Node 4", next = 'critter_4'},
+                {text = "Return to Archives", next = 'archives'}
             }
         },
-        critter_1 = {text = "Critter 1 Text", options = {{text = "Return to Archives", next = 'archives'}}},
-        critter_2 = {text = "Critter 2 Text", options = {{text = "Return to Archives", next = 'archives'}}},
-        critter_3 = {text = "Critter 3 Text", options = {{text = "Return to Archives", next = 'archives'}}},
-        critter_4 = {text = "Critter 4 Text", options = {{text = "Return to Archives", next = 'archives'}}},
+        critter_1 = {
+            text = "Critter 1 Text",
+            options = {
+                {text = "Sub Node 1-1", next = 'critter_1_1'},
+                {text = "Sub Node 1-2", next = 'critter_1_2'},
+                {text = "Sub Node 1-3", next = 'critter_1_3'},
+                {text = "Sub Node 1-4", next = 'critter_1_4'},
+                {text = "Return to Archives", next = 'archives'}
+            }
+        },
+        critter_2 = {
+            text = "Critter 2 Text",
+            options = {
+                {text = "Sub Node 2-1", next = 'critter_2_1'},
+                {text = "Sub Node 2-2", next = 'critter_2_2'},
+                {text = "Sub Node 2-3", next = 'critter_2_3'},
+                {text = "Sub Node 2-4", next = 'critter_2_4'},
+                {text = "Return to Archives", next = 'archives'}
+            }
+        },
+        critter_3 = {
+            text = "Critter 3 Text",
+            options = {
+                {text = "Sub Node 3-1", next = 'critter_3_1'},
+                {text = "Sub Node 3-2", next = 'critter_3_2'},
+                {text = "Sub Node 3-3", next = 'critter_3_3'},
+                {text = "Sub Node 3-4", next = 'critter_3_4'},
+                {text = "Return to Archives", next = 'archives'}
+            }
+        },
+        critter_4 = {
+            text = "Critter 4 Text",
+            options = {
+                {text = "Sub Node 4-1", next = 'critter_4_1'},
+                {text = "Sub Node 4-2", next = 'critter_4_2'},
+                {text = "Sub Node 4-3", next = 'critter_4_3'},
+                {text = "Sub Node 4-4", next = 'critter_4_4'}
+            }
+        }
     }
     instance.current_node = 'archives'
     instance.buttons = {}
