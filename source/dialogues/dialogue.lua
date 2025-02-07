@@ -1,54 +1,79 @@
-Dialogue = {}
+local button = require "source.ui.button"
+local Dialogue = {}
 Dialogue.__index = Dialogue
 
-function Dialogue:new(dialogue_file)
-    -- Load dialogue, initialize components
+local window_width = love.graphics.getWidth()
+local window_height = love.graphics.getHeight()
+local centre_x = window_width / 2
+local centre_y = window_height / 2
+local offset_x, offset_y = 48, 18
+
+function Dialogue:new()
+    local instance = setmetatable({}, Dialogue)
+    -- hardcoded dialogue tree to use as example without being too messy.
+    instance.dialogue_tree = {
+        archives = {
+            text = "Archives Entry Placeholder",
+            options = {
+                {text = "Enter Node 1", next = 'critter_1'},
+                {text = "Enter Node 2", next = 'critter_2'},
+                {text = "Enter Node 3", next = 'critter_3'},
+                {text = "Enter Node 4", next = 'critter_4'}
+            }
+        },
+        critter_1 = {text = "Critter 1 Text", options = {{text = "Return to Archives", next = 'archives'}}},
+        critter_2 = {text = "Critter 2 Text", options = {{text = "Return to Archives", next = 'archives'}}},
+        critter_3 = {text = "Critter 3 Text", options = {{text = "Return to Archives", next = 'archives'}}},
+        critter_4 = {text = "Critter 4 Text", options = {{text = "Return to Archives", next = 'archives'}}},
+    }
+    instance.current_node = 'archives'
+    instance.buttons = {}
+    instance:createButtons()
+    return instance
 end
 
-function Dialogue:load_dialogue(file_path)
-    -- Load JSON or Lua table, store in self.dialogue_tree
+function Dialogue:createButtons()
+    self.buttons = {}
+    local node = self.dialogue_tree[self.current_node]
+    for i, option in ipairs(node.options) do
+        table.insert(self.buttons, button.new(
+            50, 100 + (i * 30), 150, 30, option.text,
+            function() self:setNode(option.next) end,
+            nil
+        ))
+    end
 end
 
-function Dialogue:set_node(node_id)
-    -- Set current node, check for conditions
+function Dialogue:setNode(node_id)
+    if self.dialogue_tree[node_id] then
+        self.current_node = node_id
+        self:createButtons()
+    else
+        print("[ERROR-Dialogue] dialogue node not found.")
+    end
 end
 
 function Dialogue:draw()
-    -- Render text, options, and UI
-end
-
-function Dialogue:draw_text(text, x, y, width)
-    -- Handle text rendering
-end
-
-function Dialogue:draw_options(options, x, y, width)
-    -- Render choices, check for conditions
+    local node = self.dialogue_tree[self.current_node]
+    love.graphics.printf(node.text, 10, 20, 400) -- hardcoded text box
+    for _, button in ipairs(self.buttons) do
+        button:draw()
+    end
 end
 
 function Dialogue:keypressed(key)
-    -- Handle input (number key selection)
+    local node = self.dialogue_tree[self.current_node]
+    -- register integer key input and assign node id for response.
+    if key >= '1' and key <= tostring(#node.options) then
+        local choice_index = tonumber(key)
+        self:setNode(node.options[choice_index].next)
+    end
 end
 
 function Dialogue:mousepressed(x, y, button)
-    -- Handle mouse clicks (optional)
+    for _, btn in ipairs(self.buttons) do
+        btn:checkPressed(x, y, 5)
+    end
 end
 
-function Dialogue:on_choice_selected(choice_index)
-    -- Move to next dialogue node, execute actions
-end
-
-function Dialogue:conditions_met(choice)
-    -- Check if a choice is available based on game state
-end
-
-function Dialogue:execute_actions(choice)
-    -- Execute effects like giving items, setting flags, or changing variables
-end
-
-function Dialogue:track_choices()
-    -- Store selected choices for later reference
-end
-
-function Dialogue:return_to_previous_state()
-    -- Exit dialogue and return to the game
-end
+return Dialogue

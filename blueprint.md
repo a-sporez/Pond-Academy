@@ -47,77 +47,6 @@
 
 ---
 
-## **Dialogue System & State Machine Reference Sheet**
-
-### **- Example Dialogue File (JSON Format)**
-
-```json
-{
-    "intro": {
-        "text": "Welcome to Pond Academy. What do you seek?",
-        "options": [
-            {"text": "Knowledge", "next": "knowledge"},
-            {"text": "Power", "next": "power"}
-        ]
-    },
-    "knowledge": {
-        "text": "Knowledge is endless, but are you prepared for it?",
-        "options": [
-            {"text": "Yes", "next": "end"},
-            {"text": "No", "next": "intro"}
-        ]
-    },
-    "power": {
-        "text": "Power comes with responsibility. Do you accept it?",
-        "options": [
-            {"text": "Yes", "next": "end"},
-            {"text": "No", "next": "intro"}
-        ]
-    },
-    "end": {
-        "text": "Your path is set.",
-        "options": []
-    }
-}
-```
-
----
-
-### **- Entry Point: `intro.lua` (State)**
-```lua
-local intro = {}
-local Dialogue = require("source.dialogue")
-
-function intro:enter()
-    self.dialogue = Dialogue:new("data/dialogue.json")
-    self.dialogue:set_node("intro") -- Set entry node
-end
-
-function intro:update(dt)
-    -- Update logic if needed (e.g., animations)
-end
-
-function intro:draw()
-    self.dialogue:draw()
-end
-
-function intro:keypressed(key)
-    self.dialogue:keypressed(key)
-
-    if key == "return" and self.dialogue.current_node == "end" then
-        State:enableMenu() -- Transition to menu after dialogue ends
-    end
-end
-
-function intro:mousepressed(x, y, button)
-    self.dialogue:mousepressed(x, y, button)
-end
-
-return intro
-```
-
----
-
 ### **- How the Dialogue System Works in the State Machine**
 - **State Transitions:**
   - When `intro.lua` starts, it loads the `Dialogue` system.
@@ -143,3 +72,60 @@ return intro
 | **Change game state** | `State:switch(require('source.states.menu'))` |
 
 ---
+
+```lua
+Dialogue = {}
+Dialogue.__index = Dialogue
+
+function Dialogue:new(dialogue_file)
+    -- Load dialogue, initialize components
+end
+
+function Dialogue:load_dialogue(file_path)
+    -- Load JSON or Lua table, store in self.dialogue_tree
+end
+
+function Dialogue:set_node(node_id)
+    -- Set current node, check for conditions
+end
+
+function Dialogue:draw()
+    -- Render text, options, and UI
+end
+
+function Dialogue:draw_text(text, x, y, width)
+    -- Handle text rendering
+end
+
+function Dialogue:draw_options(options, x, y, width)
+    -- Render choices, check for conditions
+end
+
+function Dialogue:keypressed(key)
+    -- Handle input (number key selection)
+end
+
+function Dialogue:mousepressed(x, y, button)
+    -- Handle mouse clicks (optional)
+end
+
+function Dialogue:on_choice_selected(choice_index)
+    -- Move to next dialogue node, execute actions
+end
+
+function Dialogue:conditions_met(choice)
+    -- Check if a choice is available based on game state
+end
+
+function Dialogue:execute_actions(choice)
+    -- Execute effects like giving items, setting flags, or changing variables
+end
+
+function Dialogue:track_choices()
+    -- Store selected choices for later reference
+end
+
+function Dialogue:return_to_previous_state()
+    -- Exit dialogue and return to the game
+end
+```
