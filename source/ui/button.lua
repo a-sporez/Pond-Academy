@@ -1,27 +1,52 @@
-local Button = {}
-Button.__index = Button
+--[[
+    Button Module
+    This module defines a simple button system for Love2D. 
+    It creates buttons with dynamic dimensions and colors, 
+    allowing interaction via mouse clicks.
 
-function Button.new(x, y, width, height, text, func, func_param)
-    local self = setmetatable({}, Button)
-    local sprt = love.graphics.newImage('assets/sprites/ui/button_1.png')
+    Features:
+    - Draws a button as a grey rectangle with a pastel pink background for text.
+    - Handles mouse click detection.
+    - Executes a function when clicked.
+--]]
+
+local button = {}
+button.__index = button
+
+--[[
+    Creates a new button instance.
+    @param x (number) - X position of the button.
+    @param y (number) - Y position of the button.
+    @param width (number) - Button width.
+    @param height (number) - Button height.
+    @param text (string) - Text displayed on the button.
+    @param func (function) - Function executed on click.
+    @param func_param (any) - Optional parameter for the function.
+    @return (table) - New button instance.
+--]]
+function button.new(x, y, width, height, text, func, func_param)
+    local self = setmetatable({}, button)
     self.x = x
     self.y = y
-    self.width = width or sprt:getWidth()
-    self.height = height or sprt:getHeight()
+    self.width = width
+    self.height = height
     self.text = text or "<none>"
-    self.func = func or function() print("no function") end
+    self.func = func or function() print("No function assigned") end
     self.func_param = func_param
-    self.button_x = x
-    self.button_y = y
-    self.sprite = sprt
     return self
 end
 
-function Button.checkPressed(self, mouse_x, mouse_y, cursor_radius)
-    if (mouse_x + cursor_radius >= self.button_x and
-        mouse_x - cursor_radius <= self.button_x + self.width) and
-        (mouse_y + cursor_radius >= self.button_y and
-        mouse_y - cursor_radius <= self.button_y + self.height) then
+--[[
+    Checks if the button is pressed.
+    @param mouse_x (number) - X position of the mouse.
+    @param mouse_y (number) - Y position of the mouse.
+    @param cursor_radius (number) - Radius around the cursor for detection.
+--]]
+function button:checkPressed(mouse_x, mouse_y, cursor_radius)
+    if (mouse_x + cursor_radius >= self.x and
+        mouse_x - cursor_radius <= self.x + self.width) and
+        (mouse_y + cursor_radius >= self.y and
+        mouse_y - cursor_radius <= self.y + self.height) then
         if self.func_param then
             self.func(self.func_param)
         else
@@ -30,15 +55,24 @@ function Button.checkPressed(self, mouse_x, mouse_y, cursor_radius)
     end
 end
 
-function Button.draw(self, button_x, button_y, text_x, text_y)
-    self.button_x = button_x or self.button_x
-    self.button_y = button_y or self.button_y
-    self.text_x = text_x and (text_x + self.button_x) or self.button_x
-    self.text_y = text_y and (text_y + self.button_y) or self.button_y
-    love.graphics.draw(self.sprite, self.button_x, self.button_y)
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.print(self.text, self.text_x, self.text_y)
+--[[
+    Draws the button on screen with a stylized background.
+--]]
+function button:draw()
+    -- Draw button background
+    love.graphics.setColor(1, 0.4, 0.4) -- Grey rectangle
+    love.graphics.rectangle("fill", self.x, self.y, self.width, self.height, 5, 5)
+    
+    -- Draw text background
+    love.graphics.setColor(1, 0.8, 0.8) -- Light pastel pink
+    love.graphics.rectangle("fill", self.x + 5, self.y + 5, self.width - 10, self.height - 10, 5, 5)
+    
+    -- Draw text
+    love.graphics.setColor(0, 0, 0) -- Black text
+    love.graphics.printf(self.text, self.x, self.y + (self.height / 2) - 6, self.width, "center")
+    
+    -- Reset color
     love.graphics.setColor(1, 1, 1)
 end
 
-return Button
+return button
