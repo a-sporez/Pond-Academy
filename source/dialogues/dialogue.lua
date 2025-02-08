@@ -1,12 +1,12 @@
 --[[
     Dialogue Module
     This module defines a simple dialogue system for Love2D.
-    It allows players to navigate a structured dialogue tree 
-    through button interactions or keyboard inputs.
+    It initializes the entry point for dialogue but loads each dialogue node
+    (e.g., Critter conversations) from separate files.
 
     Features:
     - Supports multiple dialogue nodes with branching options.
-    - Dynamically creates buttons for available dialogue choices.
+    - Loads dialogue nodes dynamically from separate modules.
     - Handles keyboard and mouse inputs to navigate dialogue.
 --]]
 
@@ -14,12 +14,19 @@ local button = require "source.ui.button"
 local Dialogue = {}
 Dialogue.__index = Dialogue
 
+-- Load dialogue nodes from separate files
+local critter_1 = require "source.dialogues.tables.critter_1"
+local critter_2 = require "source.dialogues.tables.critter_2"
+local critter_3 = require "source.dialogues.tables.critter_3"
+local critter_4 = require "source.dialogues.tables.critter_4"
+
 -- Get window dimensions
 local window_width = love.graphics.getWidth()
 local window_height = love.graphics.getHeight()
-local centre_x = window_width / 2
-local centre_y = window_height / 2
-local offset_x, offset_y = 48, 18
+
+-- Button dimensions
+local button_width = 200
+local button_height = 40
 
 --[[
     Creates a new Dialogue instance.
@@ -28,7 +35,7 @@ local offset_x, offset_y = 48, 18
 --]]
 function Dialogue:new()
     local instance = setmetatable({}, Dialogue)
-    -- Define the structure of the dialogue tree.
+    -- Define the entry point of the dialogue tree
     instance.dialogue_tree = {
         archives = {
             text = "Archives Entry Placeholder",
@@ -38,48 +45,15 @@ function Dialogue:new()
                 {text = "Enter Node 3", next = 'critter_3'},
                 {text = "Enter Node 4", next = 'critter_4'}
             }
-        },
-        critter_1 = {
-            text = "Critter 1 Text",
-            options = {
-                {text = "Sub Node 1-1", next = 'critter_1_1'},
-                {text = "Sub Node 1-2", next = 'critter_1_2'},
-                {text = "Sub Node 1-3", next = 'critter_1_3'},
-                {text = "Sub Node 1-4", next = 'critter_1_4'},
-                {text = "Return to Archives", next = 'archives'}
-            }
-        },
-        critter_2 = {
-            text = "Critter 2 Text",
-            options = {
-                {text = "Sub Node 2-1", next = 'critter_2_1'},
-                {text = "Sub Node 2-2", next = 'critter_2_2'},
-                {text = "Sub Node 2-3", next = 'critter_2_3'},
-                {text = "Sub Node 2-4", next = 'critter_2_4'},
-                {text = "Return to Archives", next = 'archives'}
-            }
-        },
-        critter_3 = {
-            text = "Critter 3 Text",
-            options = {
-                {text = "Sub Node 3-1", next = 'critter_3_1'},
-                {text = "Sub Node 3-2", next = 'critter_3_2'},
-                {text = "Sub Node 3-3", next = 'critter_3_3'},
-                {text = "Sub Node 3-4", next = 'critter_3_4'},
-                {text = "Return to Archives", next = 'archives'}
-            }
-        },
-        critter_4 = {
-            text = "Critter 4 Text",
-            options = {
-                {text = "Sub Node 4-1", next = 'critter_4_1'},
-                {text = "Sub Node 4-2", next = 'critter_4_2'},
-                {text = "Sub Node 4-3", next = 'critter_4_3'},
-                {text = "Sub Node 4-4", next = 'critter_4_4'},
-                {text = "Return to Archives", next = 'archives'}
-            }
         }
     }
+    
+    -- Merge loaded critter dialogues into the main dialogue tree
+    instance.dialogue_tree.critter_1 = critter_1
+    instance.dialogue_tree.critter_2 = critter_2
+    instance.dialogue_tree.critter_3 = critter_3
+    instance.dialogue_tree.critter_4 = critter_4
+    
     instance.current_node = 'archives'
     instance.buttons = {}
     instance:createButtons()
@@ -88,14 +62,20 @@ end
 
 --[[
     Creates buttons dynamically based on the current dialogue node options.
-    TODO: remove hardcoded values
 --]]
 function Dialogue:createButtons()
     self.buttons = {}
     local node = self.dialogue_tree[self.current_node]
+    local button_x = (window_width - button_width) / 2 -- Center buttons horizontally
+    local button_y = (window_height / 2) - ((#node.options * button_height) / 2) -- Center vertically
+
     for i, option in ipairs(node.options) do
         table.insert(self.buttons, button.new(
-            50, 100 + (i * 30), 150, 30, option.text,
+            button_x, 
+            button_y + (i - 1) * (button_height + 10), -- Space evenly
+            button_width, 
+            button_height, 
+            option.text,
             function() self:setNode(option.next) end,
             nil
         ))
@@ -120,7 +100,7 @@ end
 --]]
 function Dialogue:draw()
     local node = self.dialogue_tree[self.current_node]
-    love.graphics.printf(node.text, 10, 20, 400) -- Hardcoded text box
+    love.graphics.printf(node.text, 10, 20, window_width - 20, "center") -- Center text
     for _, button in ipairs(self.buttons) do
         button:draw()
     end
