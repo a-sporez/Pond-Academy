@@ -8,6 +8,7 @@
     - Supports multiple dialogue nodes with branching options.
     - Loads dialogue nodes dynamically from separate modules.
     - Handles keyboard and mouse inputs to navigate dialogue.
+    - TODO: Adds fading effect when nodes are switched. [Partial, not working]
 --]]
 
 local button = require "source.ui.button"
@@ -27,6 +28,13 @@ local window_height = love.graphics.getHeight()
 -- Button dimensions
 local button_width = 200
 local button_height = 40
+
+-- Fade transitions variables.
+local fade_alpha = 0
+local fade_duration = 4
+local fade_timer = 0
+local is_fading = false
+local fade_state = 'none' -- 'fade_out', 'fade_in'
 
 --[[
     Creates a new Dialogue instance.
@@ -58,6 +66,45 @@ function Dialogue:new()
     instance.buttons = {}
     instance:createButtons()
     return instance
+end
+
+--[[
+    Starts the fade transition before switching nodes.
+    @param next_node (string) - ID of the next node.
+--]]
+
+function Dialogue:startFade(next_node)
+    if not is_fading then
+        is_fading = true
+        fade_state = 'fade_out'
+        fade_timer = 0
+        self.next_node = next_node -- Pass the node from params.
+    end
+end
+
+--[[
+    Updates the nodes and fading transitions.
+    @param dt (number) - Delta Time.
+--]]
+function Dialogue:update(dt)
+    if is_fading then
+        fade_timer = fade_timer + dt  -- Increment fade time
+
+        if fade_state == 'fade_out' then
+            fade_alpha = math.min(fade_timer / fade_duration, 1)  -- Increase opacity
+            if fade_timer >= fade_duration then
+                self:setNode(self.next_node)
+                fade_state = 'fade_in'
+                fade_timer = 0
+            end
+        elseif fade_state == 'fade_in' then
+            fade_alpha = 1 - math.min(fade_timer / fade_duration, 1)
+            if fade_timer >= fade_duration then
+                is_fading = false
+                fade_state = 'none'
+            end
+        end
+    end
 end
 
 --[[
@@ -104,6 +151,14 @@ function Dialogue:draw()
     for _, button in ipairs(self.buttons) do
         button:draw()
     end
+
+    -- Draw fade effect when switching between nodes.
+    if is_fading then
+        love.graphics.setColor(0, 0, 0, fade_alpha)
+        love.graphics.rectangle('fill', 0, 0, window_width, window_height)
+        love.graphics.setColor(1, 1, 1, 1)
+    end
+
 end
 
 --[[
@@ -114,7 +169,7 @@ function Dialogue:keypressed(key)
     local node = self.dialogue_tree[self.current_node]
     if key >= '1' and key <= tostring(#node.options) then
         local choice_index = tonumber(key)
-        self:setNode(node.options[choice_index].next)
+        self:startFade(node.options[choice_index].next)  -- Use fade effect before switching
     end
 end
 
