@@ -15,10 +15,10 @@ local Dialogue = {}
 Dialogue.__index = Dialogue
 
 -- Load dialogue nodes from separate files
-local critter_1 = require "source.dialogues.tables.critter_1"
-local critter_2 = require "source.dialogues.tables.critter_2"
-local critter_3 = require "source.dialogues.tables.critter_3"
-local critter_4 = require "source.dialogues.tables.critter_4"
+local critter_1 = require "source.dialogues.nodes.critter_1"
+local critter_2 = require "source.dialogues.nodes.critter_2"
+local critter_3 = require "source.dialogues.nodes.critter_3"
+local critter_4 = require "source.dialogues.nodes.critter_4"
 
 -- Get window dimensions
 local window_width = love.graphics.getWidth()
