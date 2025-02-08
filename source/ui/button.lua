@@ -5,7 +5,7 @@
     allowing interaction via mouse clicks.
 
     Features:
-    - Draws a button as a grey rectangle with a pastel pink background for text.
+    - Draws a button.
     - Handles mouse click detection.
     - Executes a function when clicked.
 --]]
@@ -60,7 +60,7 @@ end
 --]]
 function button:draw()
     -- Draw button background
-    love.graphics.setColor(1, 0.4, 0.4) -- Grey rectangle
+    love.graphics.setColor(1, 0.4, 0.4) -- Pink
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height, 5, 5)
     
     -- Draw text background

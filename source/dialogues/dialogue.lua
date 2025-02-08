@@ -88,6 +88,7 @@ end
 
 --[[
     Creates buttons dynamically based on the current dialogue node options.
+    TODO: remove hardcoded values
 --]]
 function Dialogue:createButtons()
     self.buttons = {}
