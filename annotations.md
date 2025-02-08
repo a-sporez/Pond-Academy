@@ -1,6 +1,3 @@
-Great idea! Here’s a **Lua Documentation Cheatsheet** that follows the structured commenting style I used. You can copy-paste this into your `README.md` for reference.
-
----
 
 ## **💡 Project's annotations memory sheet**
 
