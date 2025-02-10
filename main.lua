@@ -1,30 +1,30 @@
-local State     = require('source.states.state')
-local Menu      = require('source.states.menu')
+local GameStateManager     = require('source.states.GameStateManager')
+local Menu                 = require('source.states.menu')
 
 function love.load()
-    State:switch(Menu)
+    GameStateManager:switch(Menu)
 end
 
 function love.update(dt)
-    State:update(dt)
+    GameStateManager:update(dt)
 end
 
 function love.draw()
-    State:draw()
+    GameStateManager:draw()
 end
 
 function love.mousepressed(x, y, press)
-    State:mousepressed(x, y, press)
+    GameStateManager:mousepressed(x, y, press)
 end
 
 function love.textinput(key)
-    State:textinput(key)
+    GameStateManager:textinput(key)
 end
 
 function love.keypressed(key)
-    State:keypressed(key)
+    GameStateManager:keypressed(key)
 end
 
 function love.keyreleased(key)
-    State:keyreleased(key)
+    GameStateManager:keyreleased(key)
 end
