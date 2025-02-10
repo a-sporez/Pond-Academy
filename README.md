@@ -8,6 +8,18 @@ The player awakens within the Pond Academy, a space station in the solar system 
 
 In order to discover what happened to the human species, the player will have to question those critters and determine what part they playedin the destruction of the human species.
 
+## Progress Map
+
+- [x] game state manager
+- [~] dialogue tree
+- [ ] attributes assignment
+- [ ] event outcomes
+- [ ] load background sprites
+- [ ] load critter sprites
+- [ ] animations
+
+(...)
+
 Workspace Environment:
 install Love2D or link the source file to your IDE.
 
@@ -86,16 +98,3 @@ For now I am planning to hardcode the core attributes of each critter through th
 Simple module to create buttons with a constructor, metatable and can be extended without messing around with the base method.
 
 - [Button](source/ui/button.lua)
-
-## Progress
-
-- [x] game state manager
-- [x] game flow blueprint
-- [ ] dialogue tree
-- [ ] background sprites
-- [ ] critter sprites animation
-- [ ] psychic warfare source material
-- [ ] attributes assignment
-- [ ] event outcomes
-
-(...)
