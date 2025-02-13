@@ -22,7 +22,7 @@ function Archives:new()
     
     instance.critters = {}  -- Store Critter entities
     instance.walls = {}  -- Store wall collision tiles
-    instance.bunny = Bunny:new(32, 32)  -- Move Bunny to the second tile (1-based index)
+    instance.bunny = Bunny:new(32, 32)  -- Move Bunny to the second tile (1-based index, Lua problems
     instance.dialogue = nil  -- No dialogue at start
     instance.inDialogue = false  -- Dialogue state tracker
 
@@ -59,7 +59,7 @@ function Archives:isCollidingWithWall(x, y)
     -- Debug: Print the tile coordinates Bunny is trying to move to
     print("[DEBUG] Checking collision at tile:", tile_x, tile_y)
 
-    -- Ensure we stay within map bounds
+    -- Stay within map bounds
     if tile_x < 0 or tile_x >= self.map.width or tile_y < 0 or tile_y >= self.map.height then
         print("[DEBUG] Out of bounds! Treating as collision.")
         return true
