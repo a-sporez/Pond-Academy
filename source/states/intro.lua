@@ -46,7 +46,10 @@ end
     @param button (number) - Mouse button pressed.
 --]]
 function Intro:mousepressed(x, y, button)
-    self.archives:mousepressed(x, y, button)
+    if self.archives.mousepressed then  -- Avoids error if not implemented
+        self.archives:mousepressed(x, y, button)
+    end
 end
 
 return Intro
+
