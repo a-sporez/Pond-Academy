@@ -1,53 +1,61 @@
-
 local Bunny = {}
 Bunny.__index = Bunny
 
-local TILE_SIZE = 32
-
---[[
-    Creates new player (Bunny) entity.
-    @param start_x (number) - starting x position
-    @param start_y (number) - starting y location
-    @return (table) - a new Bunny instance.
+--[[ 
+    Creates a new Bunny entity.
+    @param pos_x (number) - Initial X position (in pixels).
+    @param pos_y (number) - Initial Y position (in pixels).
+    @return (table) - A new Bunny instance.
 --]]
-function Bunny:new(start_x, start_y)
+function Bunny:new(pos_x, pos_y)
     local instance = setmetatable({}, Bunny)
-    instance.x = start_x * TILE_SIZE
-    instance.y = start_y * TILE_SIZE
-    instance.sprite = love.graphics.newImage('assets/sprites/bunny.png')
+    instance.pos_x = math.floor(pos_x / 32) * 32
+    instance.pos_y = math.floor(pos_y / 32) * 32
+    instance.sprite = love.graphics.newImage("assets/sprites/bunny.png")
     return instance
 end
 
-function Bunny:move(dx, dy, archives)
-    local new_x = self.x + (dx * TILE_SIZE)
-    local new_y = self.y + (dy * TILE_SIZE)
+--[[ 
+    Draws Bunny at its position.
+--]]
+function Bunny:draw()
+    love.graphics.draw(self.sprite, self.pos_x, self.pos_y)
+end
+
+--[[ 
+    Updates Bunny (currently unused but available for future behavior).
+    @param dt (number) - Delta time.
+--]]
+function Bunny:update(dt)
+    -- Future movement animations or other logic can go here.
+end
+
+--[[ 
+    Handles key input and attempts movement.
+    @param key (string) - The key pressed.
+    @param archives (table) - The Archives scene reference for collision checks.
+--]]
+function Bunny:keypressed(key, archives)
+    local new_x = self.pos_x
+    local new_y = self.pos_y
+
+    if key == "up" then
+        new_y = self.pos_y - 32  -- Normal -Y movement (up)
+    elseif key == "down" then
+        new_y = self.pos_y + 32  -- Normal +Y movement (down)
+    elseif key == "left" then
+        new_x = self.pos_x - 32
+    elseif key == "right" then
+        new_x = self.pos_x + 32
+    end
 
     if not archives:isCollidingWithWall(new_x, new_y) then
-        self.x = new_x
-        self.y = new_y
-
-        -- check for interactions with door
-        local door = archives:interactWithDoor(self.x, self.y)
-        if door then
-            print('[GAME] LOCKED DOOR')
-        end
+        self.pos_x = new_x
+        self.pos_y = new_y
+        print("[DEBUG] Bunny moved to:", self.pos_x, self.pos_y)
+    else
+        print("[DEBUG] Collision detected! Move blocked.")
     end
-end
-
-function Bunny:keypressed(key, archives)
-    if key == 'up' or key == 'w' then
-        self:move(0, -1, archives)
-    elseif key == 'down' or key == 's' then
-        self:move(0, 1, archives)
-    elseif key == 'left' or key == 'a' then
-        self:move(-1, 0)
-    elseif key == 'right' or key == 'd' then
-        self:move(1, 0)
-    end
-end
-
-function Bunny:draw()
-    love.graphics.draw(self.sprite, self.x, self.y)
 end
 
 return Bunny

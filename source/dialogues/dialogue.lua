@@ -1,27 +1,14 @@
---[[
-    Dialogue Module
-    This module defines a simple dialogue system for Love2D.
-    It initializes the entry point for dialogue but loads each dialogue node
-    (e.g., Critter conversations) from separate files.
-
-    Features:
-    - Supports multiple dialogue nodes with branching options.
-    - Loads dialogue nodes dynamically from separate modules.
-    - Handles keyboard and mouse inputs to navigate dialogue.
-    - TODO: Adds fading effect when nodes are switched. [Partial, not working]
---]]
-
 local button = require "source.ui.button"
 local Dialogue = {}
 Dialogue.__index = Dialogue
 
--- Load dialogue nodes from separate files
+-- Load dialogue nodes dynamically
 local critter_1 = require "source.dialogues.nodes.critter_1"
 local critter_2 = require "source.dialogues.nodes.critter_2"
 local critter_3 = require "source.dialogues.nodes.critter_3"
 local critter_4 = require "source.dialogues.nodes.critter_4"
 
--- Get window dimensions
+-- Window dimensions
 local window_width = love.graphics.getWidth()
 local window_height = love.graphics.getHeight()
 
@@ -29,78 +16,27 @@ local window_height = love.graphics.getHeight()
 local button_width = 200
 local button_height = 40
 
--- Fade transitions variables.
-local fade_alpha = 0
-local fade_duration = 4
-local fade_timer = 0
-local is_fading = false
-local fade_state = 'none' -- 'fade_out', 'fade_in'
-
 --[[
     Creates a new Dialogue instance.
-    Initializes the dialogue tree and creates buttons dynamically.
+    @param start_node (string) - The entry point dialogue node.
     @return (table) - New Dialogue instance.
 --]]
-function Dialogue:new(start_node, onDialogueEnd)
+function Dialogue:new(start_node)
     local instance = setmetatable({}, Dialogue)
-    -- Define the entry point of the dialogue tree
+    
+    -- Store dialogue tree
     instance.dialogue_tree = {
-        archives = {
-            text = "Archives Entry Placeholder",
-            options = {
-                {text = "Enter Node 1", next = 'critter_1'},
-                {text = "Enter Node 2", next = 'critter_2'},
-                {text = "Enter Node 3", next = 'critter_3'},
-                {text = "Enter Node 4", next = 'critter_4'}
-            }
-        }
+        critter_1 = critter_1,
+        critter_2 = critter_2,
+        critter_3 = critter_3,
+        critter_4 = critter_4
     }
     
-    -- Merge loaded critter dialogues into the main dialogue tree
-    instance.dialogue_tree.critter_1 = critter_1
-    instance.dialogue_tree.critter_2 = critter_2
-    instance.dialogue_tree.critter_3 = critter_3
-    instance.dialogue_tree.critter_4 = critter_4
-    
-    instance.current_node = start_node or 'archives'
-    instance.onDialogueEnd = onDialogueEnd -- Store callback for dialogue end
+    instance.current_node = start_node
     instance.buttons = {}
     instance:createButtons()
+    
     return instance
-end
-
---[[
-    Starts the fade transition before switching nodes.
-    @param next_node (string) - ID of the next node.
---]]
-
-function Dialogue:startFade(next_node)
-    self:setNode(next_node)  -- Instantly switch without fading
-end
-
---[[
-    Updates the nodes and fading transitions.
-    @param dt (number) - Delta Time.
---]]
-function Dialogue:update(dt)
-    if is_fading then
-        fade_timer = fade_timer + dt  -- Increment fade time
-
-        if fade_state == 'fade_out' then
-            fade_alpha = math.min(fade_timer / fade_duration, 1)  -- Increase opacity
-            if fade_timer >= fade_duration then
-                self:setNode(self.next_node)
-                fade_state = 'fade_in'
-                fade_timer = 0
-            end
-        elseif fade_state == 'fade_in' then
-            fade_alpha = 1 - math.min(fade_timer / fade_duration, 1)
-            if fade_timer >= fade_duration then
-                is_fading = false
-                fade_state = 'none'
-            end
-        end
-    end
 end
 
 --[[
@@ -109,13 +45,13 @@ end
 function Dialogue:createButtons()
     self.buttons = {}
     local node = self.dialogue_tree[self.current_node]
-    local button_x = (window_width - button_width) / 2 -- Center buttons horizontally
-    local button_y = (window_height / 2) - ((#node.options * button_height) / 2) -- Center vertically
+    local button_x = (window_width - button_width) / 2
+    local button_y = (window_height / 2) - ((#node.options * button_height) / 2)
 
     for i, option in ipairs(node.options) do
         table.insert(self.buttons, button.new(
             button_x, 
-            button_y + (i - 1) * (button_height + 10), -- Space evenly
+            button_y + (i - 1) * (button_height + 10),
             button_width, 
             button_height, 
             option.text,
@@ -134,7 +70,7 @@ function Dialogue:setNode(node_id)
         self.current_node = node_id
         self:createButtons()
     else
-        print("[ERROR-Dialogue] dialogue node not found.")
+        print("[ERROR] Dialogue node not found:", node_id)
     end
 end
 
@@ -143,18 +79,11 @@ end
 --]]
 function Dialogue:draw()
     local node = self.dialogue_tree[self.current_node]
-    love.graphics.printf(node.text, 10, 20, window_width - 20, "center") -- Center text
+    love.graphics.printf(node.text, 10, 20, window_width - 20, "center")
+    
     for _, button in ipairs(self.buttons) do
         button:draw()
     end
-
-    -- Draw fade effect when switching between nodes.
-    if is_fading then
-        love.graphics.setColor(0, 0, 0, fade_alpha)
-        love.graphics.rectangle('fill', 0, 0, window_width, window_height)
-        love.graphics.setColor(1, 1, 1, 1)
-    end
-
 end
 
 --[[
@@ -163,18 +92,10 @@ end
 --]]
 function Dialogue:keypressed(key)
     local node = self.dialogue_tree[self.current_node]
-
-    if key == "return" then  -- Exit dialogue when pressing enter
-        if self.onDialogueEnd then
-            self.onDialogueEnd()  -- Notify archives.lua that dialogue is done
-        end
-        return
-    end
-
-    -- Continue normal choice selection
+    
     if key >= '1' and key <= tostring(#node.options) then
         local choice_index = tonumber(key)
-        self:startFade(node.options[choice_index].next)
+        self:setNode(node.options[choice_index].next)
     end
 end
 
