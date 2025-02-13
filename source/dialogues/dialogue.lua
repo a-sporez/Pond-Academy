@@ -41,7 +41,7 @@ local fade_state = 'none' -- 'fade_out', 'fade_in'
     Initializes the dialogue tree and creates buttons dynamically.
     @return (table) - New Dialogue instance.
 --]]
-function Dialogue:new()
+function Dialogue:new(start_node, onDialogueEnd)
     local instance = setmetatable({}, Dialogue)
     -- Define the entry point of the dialogue tree
     instance.dialogue_tree = {
@@ -62,7 +62,8 @@ function Dialogue:new()
     instance.dialogue_tree.critter_3 = critter_3
     instance.dialogue_tree.critter_4 = critter_4
     
-    instance.current_node = 'archives'
+    instance.current_node = start_node or 'archives'
+    instance.onDialogueEnd = onDialogueEnd -- Store callback for dialogue end
     instance.buttons = {}
     instance:createButtons()
     return instance
@@ -74,12 +75,7 @@ end
 --]]
 
 function Dialogue:startFade(next_node)
-    if not is_fading then
-        is_fading = true
-        fade_state = 'fade_out'
-        fade_timer = 0
-        self.next_node = next_node -- Pass the node from params.
-    end
+    self:setNode(next_node)  -- Instantly switch without fading
 end
 
 --[[
@@ -167,9 +163,18 @@ end
 --]]
 function Dialogue:keypressed(key)
     local node = self.dialogue_tree[self.current_node]
+
+    if key == "return" then  -- Exit dialogue when pressing enter
+        if self.onDialogueEnd then
+            self.onDialogueEnd()  -- Notify archives.lua that dialogue is done
+        end
+        return
+    end
+
+    -- Continue normal choice selection
     if key >= '1' and key <= tostring(#node.options) then
         local choice_index = tonumber(key)
-        self:startFade(node.options[choice_index].next)  -- Use fade effect before switching
+        self:startFade(node.options[choice_index].next)
     end
 end
 

@@ -40,7 +40,7 @@ end
     Switches to the Intro game state.
 --]]
 function GameStateManager:enableIntro()
-    self:switch(require('source.states.running'))
+    self:switch(require('source.states.intro'))
 end
 
 --[[ 
