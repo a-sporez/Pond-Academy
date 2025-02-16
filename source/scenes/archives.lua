@@ -10,27 +10,36 @@ local Dialogue = require('source.dialogues.dialogue')  -- Dialogue system
 -- Path to the Tiled map file
 local MAP_PATH = "assets/scenes/archives_map.lua"
 
---[[
+--[[ 
     Initializes the Archives scene.
     @return (table) - A new Archives scene instance.
 --]]
 function Archives:new()
     local instance = setmetatable({}, Archives)
     
-    -- Load the map using STI (only floor & walls)
+    -- Load the map using STI
     instance.map = sti(MAP_PATH)
-    
-    instance.critters = {}  -- Store Critter entities
+
+    -- 🔹 Get tile size dynamically from map metadata
+    instance.tile_size = instance.map.tilewidth  -- Assuming square tiles (tilewidth == tileheight)
+
+    -- Initialize entities
+    instance.critters = Critter:loadAll()
     instance.walls = {}  -- Store wall collision tiles
-    instance.bunny = Bunny:new(32, 32)  -- Move Bunny to the second tile (1-based index, Lua problems
+    instance.bunny = Bunny:new(instance.tile_size * 12, instance.tile_size * 8)
     instance.dialogue = nil  -- No dialogue at start
     instance.inDialogue = false  -- Dialogue state tracker
+
+    -- Debug: Print Critter loading
+    for _, critter in ipairs(instance.critters) do
+        print("[DEBUG] Loaded Critter:", critter.name, "at", critter.x, critter.y)
+    end
 
     instance:loadCollisionData()  -- Load walls
     return instance
 end
 
---[[
+--[[ 
     Loads wall collision data from the Tiled map.
 --]]
 function Archives:loadCollisionData()
@@ -38,14 +47,19 @@ function Archives:loadCollisionData()
         for y = 1, #self.map.layers["wall"].data do
             for x = 1, #self.map.layers["wall"].data[y] do
                 if self.map.layers["wall"].data[y][x] ~= 0 then
-                    table.insert(self.walls, { x = x * 32, y = y * 32, width = 32, height = 32 })
+                    table.insert(self.walls, { 
+                        x = x * self.tile_size,
+                        y = y * self.tile_size,
+                        width = self.tile_size,
+                        height = self.tile_size
+                    })
                 end
             end
         end
     end
 end
 
---[[
+--[[ 
     Checks if Bunny is colliding with a wall.
     @param x (number) - X position to check.
     @param y (number) - Y position to check.
@@ -53,8 +67,8 @@ end
 --]]
 function Archives:isCollidingWithWall(x, y)
     -- Convert pixel position to tile index
-    local tile_x = math.floor(x / 32)
-    local tile_y = math.floor(y / 32)
+    local tile_x = math.floor(x / self.tile_size)
+    local tile_y = math.floor(y / self.tile_size)
 
     -- Debug: Print the tile coordinates Bunny is trying to move to
     print("[DEBUG] Checking collision at tile:", tile_x, tile_y)
@@ -84,7 +98,7 @@ function Archives:isCollidingWithWall(x, y)
     return false
 end
 
---[[
+--[[ 
     Updates the scene.
     @param dt (number) - Delta time since last frame.
 --]]
@@ -99,7 +113,7 @@ function Archives:update(dt)
     end
 end
 
---[[
+--[[ 
     Draws the scene, Bunny, and Critters. Also draws dialogue if active.
 --]]
 function Archives:draw()
@@ -114,7 +128,7 @@ function Archives:draw()
     end
 end
 
---[[
+--[[ 
     Handles Bunny interaction with Critters.
     Starts dialogue if a Critter is interacted with.
 --]]
@@ -130,7 +144,7 @@ function Archives:interact()
     end
 end
 
---[[
+--[[ 
     Handles key input.
     @param key (string) - The key pressed.
 --]]

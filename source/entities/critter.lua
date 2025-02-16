@@ -33,6 +33,7 @@ end
     Draws the Critter at its location.
 --]]
 function Critter:draw()
+--    print("[DEGUG] Drawing critter", self.name, " @ ", self.x, self.y)
     love.graphics.setColor(1, 1, 1) -- Reset to white in case of any tinting
     love.graphics.draw(self.sprite, self.x, self.y, 0, self.scale_x, self.scale_y)
 end
@@ -62,9 +63,9 @@ end
 function Critter:loadAll()
     return {
         Critter:new("Critter_1", 1, 1, "assets/sprites/critter_1.png", "critter_1"),
-        Critter:new("Critter_2", 21, 1, "assets/sprites/critter_2.png", "critter_2"),
-        Critter:new("Critter_3", 1, 17, "assets/sprites/critter_3.png", "critter_3"),
-        Critter:new("Critter_4", 21, 17, "assets/sprites/critter_4.png", "critter_4")
+        Critter:new("Critter_2", 22, 1, "assets/sprites/critter_2.png", "critter_2"),
+        Critter:new("Critter_3", 1, 16, "assets/sprites/critter_3.png", "critter_3"),
+        Critter:new("Critter_4", 22, 16, "assets/sprites/critter_4.png", "critter_4")
     }
 end
 
