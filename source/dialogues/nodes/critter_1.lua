@@ -1,11 +1,10 @@
 local critter_1 = {
     text = "Critter 1 Text",
     options = {
-        {text = "Sub Node 1-1", next = 'critter_1_1'},
-        {text = "Sub Node 1-2", next = 'critter_1_2'},
-        {text = "Sub Node 1-3", next = 'critter_1_3'},
-        {text = "Sub Node 1-4", next = 'critter_1_4'},
-        {text = "Return to Archives", next = 'archives'}
+        {text = "critter 1-1", next = 'critter_1_1'},
+        {text = "critter 1-2", next = 'critter_1_2'},
+        {text = "critter 1-3", next = 'critter_1_3'},
+        {text = "critter 1-4", next = 'critter_1_4'}
     }
 }
 

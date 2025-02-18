@@ -23,7 +23,7 @@ local button_height = 40
 --]]
 function Dialogue:new(start_node)
     local instance = setmetatable({}, Dialogue)
-    
+
     -- Store dialogue tree
     instance.dialogue_tree = {
         critter_1 = critter_1,
@@ -31,11 +31,17 @@ function Dialogue:new(start_node)
         critter_3 = critter_3,
         critter_4 = critter_4
     }
-    
+
+    -- Validate start_node
+    if not instance.dialogue_tree[start_node] then
+        print("[ERROR] Dialogue node '" .. tostring(start_node) .. "' not found!")
+        return nil
+    end
+
     instance.current_node = start_node
     instance.buttons = {}
     instance:createButtons()
-    
+
     return instance
 end
 
@@ -44,20 +50,42 @@ end
 --]]
 function Dialogue:createButtons()
     self.buttons = {}
+
+    -- Prevents issues if dialogue is closed
+    if not self.current_node or not self.dialogue_tree[self.current_node] then
+        return
+    end
+
     local node = self.dialogue_tree[self.current_node]
     local button_x = (window_width - button_width) / 2
     local button_y = (window_height / 2) - ((#node.options * button_height) / 2)
 
     for i, option in ipairs(node.options) do
-        table.insert(self.buttons, button.new(
-            button_x, 
-            button_y + (i - 1) * (button_height + 10),
-            button_width, 
-            button_height, 
-            option.text,
-            function() self:setNode(option.next) end,
-            nil
-        ))
+        -- Handle "Return to Archives" as a close action
+        if option.text == "Return to Archives" then
+            table.insert(self.buttons, button.new(
+                button_x, 
+                button_y + (i - 1) * (button_height + 10),
+                button_width, 
+                button_height, 
+                "Close Dialogue",
+                function()
+                    print("[DEBUG] Closing dialogue...")
+                    self.current_node = nil
+                end,
+                nil
+            ))
+        else
+            table.insert(self.buttons, button.new(
+                button_x, 
+                button_y + (i - 1) * (button_height + 10),
+                button_width, 
+                button_height, 
+                option.text,
+                function() self:setNode(option.next) end,
+                nil
+            ))
+        end
     end
 end
 
@@ -66,12 +94,34 @@ end
     @param node_id (string) - The ID of the new dialogue node.
 --]]
 function Dialogue:setNode(node_id)
+    if node_id == "archives" then
+        print("[DEBUG] Closing dialogue and returning to Archives")
+        self.current_node = nil
+        return
+    end
+
+    -- First, check if the node exists in the main tree
     if self.dialogue_tree[node_id] then
         self.current_node = node_id
-        self:createButtons()
     else
-        print("[ERROR] Dialogue node not found:", node_id)
+        -- Check if it's a sub-node inside a critter's dialogue tree
+        for _, critter in pairs(self.dialogue_tree) do
+            if critter[node_id] then
+                self.current_node = node_id
+                -- Set active sub-node
+                self.dialogue_tree[self.current_node] = critter[node_id]
+                break
+            end
+        end
     end
+
+    -- Ensure valid transition
+    if not self.dialogue_tree[self.current_node] then
+        print("[ERROR] Dialogue node '" .. tostring(node_id) .. "' not found!")
+        return
+    end
+
+    self:createButtons()
 end
 
 --[[
@@ -84,6 +134,11 @@ function Dialogue:draw()
     for _, button in ipairs(self.buttons) do
         button:draw()
     end
+end
+
+function Dialogue:update(dt)
+    -- Placeholder: Add any update logic if needed
+    print("[DEBUG] Updating dialogue: " .. self.current_node)
 end
 
 --[[

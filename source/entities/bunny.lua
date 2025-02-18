@@ -47,6 +47,9 @@ function Bunny:keypressed(key, archives)
         new_x = self.pos_x - 32
     elseif key == "right" then
         new_x = self.pos_x + 32
+    elseif key == "e" then
+        archives:interact()
+        return
     end
 
     if not archives:isCollidingWithWall(new_x, new_y) then

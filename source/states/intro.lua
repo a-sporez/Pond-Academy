@@ -52,4 +52,3 @@ function Intro:mousepressed(x, y, button)
 end
 
 return Intro
-

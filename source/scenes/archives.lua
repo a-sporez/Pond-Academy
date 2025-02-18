@@ -103,10 +103,15 @@ end
     @param dt (number) - Delta time since last frame.
 --]]
 function Archives:update(dt)
-    if self.inDialogue and self.dialogue then
-        self.dialogue:update(dt)  -- Update dialogue instead of game world
+    if self.inDialogue then
+        if self.dialogue then  -- Ensure dialogue is not nil
+            self.dialogue:update(dt)
+        else
+            print("[ERROR] Dialogue object is nil while inDialogue is true!") -- Debugging message
+            self.inDialogue = false -- Prevent the game from being stuck
+        end
     else
-        self.bunny:update(dt)  -- Update Bunny movement
+        self.bunny:update(dt)
         for _, critter in ipairs(self.critters) do
             critter:update(dt)
         end
@@ -133,12 +138,19 @@ end
     Starts dialogue if a Critter is interacted with.
 --]]
 function Archives:interact()
-    if self.inDialogue then return end  -- Ignore input during dialogue
-    
+    if self.inDialogue then return end
+
     for _, critter in ipairs(self.critters) do
-        if critter:isInteracted(self.bunny.x, self.bunny.y) then
-            self.dialogue = Dialogue:new(critter.dialogue_ID)  -- Start dialogue
-            self.inDialogue = true
+        if critter:isInteracted(self.bunny.pos_x, self.bunny.pos_y) then
+            local new_dialogue = Dialogue:new(critter.dialogue_ID)
+            
+            if new_dialogue then  -- Only start dialogue if valid
+                self.dialogue = new_dialogue
+                self.inDialogue = true
+                print("[DEBUG] Started dialogue with:", critter.name)
+            else
+                print("[ERROR] Failed to start dialogue for:", critter.name)
+            end
             return
         end
     end
@@ -152,13 +164,26 @@ function Archives:keypressed(key)
     if self.inDialogue and self.dialogue then
         self.dialogue:keypressed(key)
         
-        -- Example: End dialogue when pressing return
+        -- Close dialogue if return is pressed
         if key == "return" then
+            print("[DEBUG] Closing dialogue with Return key")
             self.inDialogue = false
             self.dialogue = nil
         end
     else
         self.bunny:keypressed(key, self)
+    end
+end
+
+function Archives:mousepressed(x, y, button)
+    if self.inDialogue and self.dialogue then
+        self.dialogue:mousepressed(x, y, button)
+
+        -- If dialogue was closed, set inDialogue to false
+        if not self.dialogue.current_node then
+            self.inDialogue = false
+            self.dialogue = nil
+        end
     end
 end
 
