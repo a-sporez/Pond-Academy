@@ -32,7 +32,7 @@ function Archives:new()
 
     -- Debug: Print Critter loading
     for _, critter in ipairs(instance.critters) do
-        print("[DEBUG] Loaded Critter:", critter.name, "at", critter.x, critter.y)
+        print("[DEBUG-archives] Loaded Critter:", critter.name, "at", critter.x, critter.y)
     end
 
     instance:loadCollisionData()  -- Load walls
@@ -71,11 +71,11 @@ function Archives:isCollidingWithWall(x, y)
     local tile_y = math.floor(y / self.tile_size)
 
     -- Debug: Print the tile coordinates Bunny is trying to move to
-    print("[DEBUG] Checking collision at tile:", tile_x, tile_y)
+    print("[DEBUG-archives] Checking collision at tile:", tile_x, tile_y)
 
     -- Stay within map bounds
     if tile_x < 0 or tile_x >= self.map.width or tile_y < 0 or tile_y >= self.map.height then
-        print("[DEBUG] Out of bounds! Treating as collision.")
+        print("[DEBUG-archives] Out of bounds! Treating as collision.")
         return true
     end
 
@@ -84,14 +84,14 @@ function Archives:isCollidingWithWall(x, y)
 
     -- Debug: Print the tile ID Bunny is trying to step on
     if tile_id then
-        print("[DEBUG] Tile ID at collision point:", tile_id)
+        print("[DEBUG-archives] Tile ID at collision point:", tile_id)
     else
-        print("[DEBUG] No tile data found at this position.")
+        print("[DEBUG-archives] No tile data found at this position.")
     end
 
     -- If tile is not empty (not 0), it means it's a wall
     if tile_id and tile_id ~= 0 then
-        print("[DEBUG] Collision detected at tile:", tile_x, tile_y, "Tile ID:", tile_id)
+        print("[DEBUG-archives] Collision detected at tile:", tile_x, tile_y, "Tile ID:", tile_id)
         return true
     end
 
@@ -107,7 +107,7 @@ function Archives:update(dt)
         if self.dialogue then  -- Ensure dialogue is not nil
             self.dialogue:update(dt)
         else
-            print("[ERROR] Dialogue object is nil while inDialogue is true!") -- Debugging message
+            print("[ERROR-archives] Dialogue object is nil while inDialogue is true!") -- Debugging message
             self.inDialogue = false -- Prevent the game from being stuck
         end
     else
@@ -142,14 +142,14 @@ function Archives:interact()
 
     for _, critter in ipairs(self.critters) do
         if critter:isInteracted(self.bunny.pos_x, self.bunny.pos_y) then
-            local new_dialogue = Dialogue:new(critter.dialogue_ID)
-            
-            if new_dialogue then  -- Only start dialogue if valid
+            local new_dialogue = Dialogue:new(critter.dialogue_ID)  -- ✅ Ensure dialogue_ID is used
+
+            if new_dialogue then
                 self.dialogue = new_dialogue
                 self.inDialogue = true
-                print("[DEBUG] Started dialogue with:", critter.name)
+                print("[DEBUG-archives] Started dialogue with:", critter.dialogue_ID)
             else
-                print("[ERROR] Failed to start dialogue for:", critter.name)
+                print("[ERROR-archives] Failed to start dialogue for:", critter.dialogue_ID)
             end
             return
         end
@@ -166,7 +166,7 @@ function Archives:keypressed(key)
         
         -- Close dialogue if return is pressed
         if key == "return" then
-            print("[DEBUG] Closing dialogue with Return key")
+            print("[DEBUG-archives] Closing dialogue with Return key")
             self.inDialogue = false
             self.dialogue = nil
         end

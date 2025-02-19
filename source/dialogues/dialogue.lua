@@ -1,12 +1,15 @@
 local button = require "source.ui.button"
-local Dialogue = {}
-Dialogue.__index = Dialogue
 
 -- Load dialogue nodes dynamically
-local critter_1 = require "source.dialogues.nodes.critter_1"
-local critter_2 = require "source.dialogues.nodes.critter_2"
-local critter_3 = require "source.dialogues.nodes.critter_3"
-local critter_4 = require "source.dialogues.nodes.critter_4"
+local critter_dialogues = {
+    smug = require "source.dialogues.nodes.smug",
+    olive = require "source.dialogues.nodes.olive",
+    bambi = require "source.dialogues.nodes.bambi",
+    wiz = require "source.dialogues.nodes.wiz"
+}
+
+local Dialogue = {}
+Dialogue.__index = Dialogue
 
 -- Window dimensions
 local window_width = love.graphics.getWidth()
@@ -16,36 +19,40 @@ local window_height = love.graphics.getHeight()
 local button_width = 200
 local button_height = 40
 
---[[
+--[[ 
     Creates a new Dialogue instance.
-    @param start_node (string) - The entry point dialogue node.
+    @param critter_name (string) - The critter being interacted with.
     @return (table) - New Dialogue instance.
 --]]
-function Dialogue:new(start_node)
+function Dialogue:new(critter_name)
     local instance = setmetatable({}, Dialogue)
 
-    -- Store dialogue tree
-    instance.dialogue_tree = {
-        critter_1 = critter_1,
-        critter_2 = critter_2,
-        critter_3 = critter_3,
-        critter_4 = critter_4
-    }
-
-    -- Validate start_node
-    if not instance.dialogue_tree[start_node] then
-        print("[ERROR] Dialogue node '" .. tostring(start_node) .. "' not found!")
+    if not critter_dialogues[critter_name] then
+        print("[ERROR] Dialogue file for critter '" .. tostring(critter_name) .. "' not found!")
         return nil
     end
 
-    instance.current_node = start_node
+    instance.critter_name = critter_name
+    instance.dialogue_tree = critter_dialogues[critter_name]
+
+    -- Log the loaded dialogue tree for debugging
+    print("[DEBUG] Loaded dialogue for:", critter_name, "Nodes available:", instance.dialogue_tree)
+
+    -- Ensure the root node exists before setting it
+    if instance.dialogue_tree[critter_name] then
+        instance.current_node = critter_name  -- Start at the critter's root
+    else
+        print("[ERROR] Root node '" .. critter_name .. "' not found in dialogue data! Using fallback 'node_1'.")
+        instance.current_node = "node_1"  -- Fallback to node_1 if the critter root is missing
+    end
+
     instance.buttons = {}
     instance:createButtons()
 
     return instance
 end
 
---[[
+--[[ 
     Creates buttons dynamically based on the current dialogue node options.
 --]]
 function Dialogue:createButtons()
@@ -61,7 +68,7 @@ function Dialogue:createButtons()
     local button_y = (window_height / 2) - ((#node.options * button_height) / 2)
 
     for i, option in ipairs(node.options) do
-        -- Handle "Return to Archives" as a close action
+        -- Handle exit condition
         if option.text == "Return to Archives" then
             table.insert(self.buttons, button.new(
                 button_x, 
@@ -89,7 +96,7 @@ function Dialogue:createButtons()
     end
 end
 
---[[
+--[[ 
     Changes the current dialogue node and updates available buttons.
     @param node_id (string) - The ID of the new dialogue node.
 --]]
@@ -100,48 +107,39 @@ function Dialogue:setNode(node_id)
         return
     end
 
-    -- First, check if the node exists in the main tree
+    -- Check if node exists inside the active critter's dialogue
     if self.dialogue_tree[node_id] then
         self.current_node = node_id
+        self:createButtons()
     else
-        -- Check if it's a sub-node inside a critter's dialogue tree
-        for _, critter in pairs(self.dialogue_tree) do
-            if critter[node_id] then
-                self.current_node = node_id
-                -- Set active sub-node
-                self.dialogue_tree[self.current_node] = critter[node_id]
-                break
-            end
-        end
+        print("[ERROR] Dialogue node '" .. tostring(node_id) .. "' not found for critter:", self.critter_name)
     end
-
-    -- Ensure valid transition
-    if not self.dialogue_tree[self.current_node] then
-        print("[ERROR] Dialogue node '" .. tostring(node_id) .. "' not found!")
-        return
-    end
-
-    self:createButtons()
 end
 
---[[
+--[[ 
     Draws the current dialogue text and buttons on screen.
 --]]
 function Dialogue:draw()
+    if not self.current_node or not self.dialogue_tree[self.current_node] then
+        print("[ERROR] Dialogue node '" .. tostring(self.current_node) .. "' not found for critter:", self.critter_name)
+        return
+    end
+
     local node = self.dialogue_tree[self.current_node]
     love.graphics.printf(node.text, 10, 20, window_width - 20, "center")
-    
+
     for _, button in ipairs(self.buttons) do
         button:draw()
     end
 end
 
 function Dialogue:update(dt)
-    -- Placeholder: Add any update logic if needed
-    print("[DEBUG] Updating dialogue: " .. self.current_node)
+    if self.current_node then
+        print("[DEBUG] Updating dialogue: " .. self.current_node)
+    end
 end
 
---[[
+--[[ 
     Handles keyboard input to navigate dialogue.
     @param key (string) - The key pressed by the player.
 --]]
@@ -154,7 +152,7 @@ function Dialogue:keypressed(key)
     end
 end
 
---[[
+--[[ 
     Handles mouse input to navigate dialogue by clicking buttons.
     @param x (number) - Mouse X position.
     @param y (number) - Mouse Y position.

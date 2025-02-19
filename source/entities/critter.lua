@@ -62,10 +62,10 @@ end
 --]]
 function Critter:loadAll()
     return {
-        Critter:new("Critter_1", 1, 1, "assets/sprites/critter_1.png", "critter_1"),
-        Critter:new("Critter_2", 22, 1, "assets/sprites/critter_2.png", "critter_2"),
-        Critter:new("Critter_3", 1, 16, "assets/sprites/critter_3.png", "critter_3"),
-        Critter:new("Critter_4", 22, 16, "assets/sprites/critter_4.png", "critter_4")
+        Critter:new("smug", 1, 1, "assets/sprites/smug.png", "smug"),
+        Critter:new("olive", 22, 1, "assets/sprites/olive.png", "olive"),
+        Critter:new("bambi", 1, 16, "assets/sprites/bambi.png", "bambi"),
+        Critter:new("wiz", 22, 16, "assets/sprites/wiz.png", "wiz")
     }
 end
 
