@@ -15,10 +15,6 @@ Dialogue.__index = Dialogue
 local window_width = love.graphics.getWidth()
 local window_height = love.graphics.getHeight()
 
--- Button dimensions
-local button_width = 200
-local button_height = 40
-
 --[[ 
     Creates a new Dialogue instance.
     @param critter_name (string) - The critter being interacted with.
@@ -34,17 +30,12 @@ function Dialogue:new(critter_name)
 
     instance.critter_name = critter_name
     instance.dialogue_tree = critter_dialogues[critter_name]
+    instance.current_node = critter_name
 
-    -- Log the loaded dialogue tree for debugging
-    print("[DEBUG] Loaded dialogue for:", critter_name, "Nodes available:", instance.dialogue_tree)
-
-    -- Ensure the root node exists before setting it
-    if instance.dialogue_tree[critter_name] then
-        instance.current_node = critter_name  -- Start at the critter's root
-    else
-        print("[ERROR] Root node '" .. critter_name .. "' not found in dialogue data! Using fallback 'node_1'.")
-        instance.current_node = "node_1"  -- Fallback to node_1 if the critter root is missing
-    end
+    -- Create text canvas
+    local canvas_width = window_width - 40
+    local canvas_height = 100
+    instance.text_canvas = love.graphics.newCanvas(canvas_width, canvas_height)
 
     instance.buttons = {}
     instance:createButtons()
@@ -58,41 +49,26 @@ end
 function Dialogue:createButtons()
     self.buttons = {}
 
-    -- Prevents issues if dialogue is closed
     if not self.current_node or not self.dialogue_tree[self.current_node] then
         return
     end
 
     local node = self.dialogue_tree[self.current_node]
-    local button_x = (window_width - button_width) / 2
-    local button_y = (window_height / 2) - ((#node.options * button_height) / 2)
+    local button_x = window_width / 2
+    local button_y = window_height / 2 + 50
 
     for i, option in ipairs(node.options) do
-        -- Handle exit condition
-        if option.text == "Return to Archives" then
-            table.insert(self.buttons, button.new(
-                button_x, 
-                button_y + (i - 1) * (button_height + 10),
-                button_width, 
-                button_height, 
-                "Close Dialogue",
-                function()
-                    print("[DEBUG] Closing dialogue...")
-                    self.current_node = nil
-                end,
-                nil
-            ))
-        else
-            table.insert(self.buttons, button.new(
-                button_x, 
-                button_y + (i - 1) * (button_height + 10),
-                button_width, 
-                button_height, 
-                option.text,
-                function() self:setNode(option.next) end,
-                nil
-            ))
-        end
+        local text_width = love.graphics.getFont():getWidth(option.text) + 20 -- Padding
+        local text_height = love.graphics.getFont():getHeight() + 10
+
+        table.insert(self.buttons, button.new(
+            button_x - text_width / 2,
+            button_y + (i - 1) * (text_height + 10),
+            text_width,
+            text_height,
+            option.text,
+            function() self:setNode(option.next) end
+        ))
     end
 end
 
@@ -126,17 +102,38 @@ function Dialogue:draw()
     end
 
     local node = self.dialogue_tree[self.current_node]
-    love.graphics.printf(node.text, 10, 20, window_width - 20, "center")
 
+    local font = love.graphics.getFont()
+    local text_width, wrapped_text = font:getWrap(node.text, window_width - 60)
+    local text_height = #wrapped_text * font:getHeight()
+
+    local canvas_height = text_height + 60  -- Adjust canvas height based on text
+    local text_y = (canvas_height - text_height) / 6
+
+    local canvas_x = 20
+    local canvas_y = 100
+
+    -- Draw text onto the text canvas
+    love.graphics.setCanvas(self.text_canvas)
+    love.graphics.clear()
+    love.graphics.printf(node.text, 10, text_y, window_width - 40, "center")
+    love.graphics.setCanvas()
+
+    -- Draw the text canvas
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(self.text_canvas, canvas_x, canvas_y)
+
+    -- Draw buttons below the canvas
+    local button_y_offset = canvas_y + canvas_height + 10
     for _, button in ipairs(self.buttons) do
+        button.y = button_y_offset
         button:draw()
+        button_y_offset = button_y_offset + button.height + 10
     end
 end
 
 function Dialogue:update(dt)
-    if self.current_node then
-        print("[DEBUG] Updating dialogue: " .. self.current_node)
-    end
+    print("[DEBUG] Updating dialogue:", self.current_node)
 end
 
 --[[ 

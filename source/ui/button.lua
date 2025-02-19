@@ -59,18 +59,25 @@ end
     Draws the button on screen with a stylized background.
 --]]
 function button:draw()
+    -- Get the font height dynamically
+    local font = love.graphics.getFont()
+    local text_height = font:getHeight()
+
+    -- Calculate the correct Y position to center text inside the button
+    local text_y = self.y + (self.height - text_height) / 2
+
     -- Draw button background
     love.graphics.setColor(1, 0.4, 0.4) -- Pink
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height, 5, 5)
-    
+
     -- Draw text background
     love.graphics.setColor(1, 0.8, 0.8) -- Light pastel pink
     love.graphics.rectangle("fill", self.x + 5, self.y + 5, self.width - 10, self.height - 10, 5, 5)
-    
-    -- Draw text
+
+    -- Draw text centered inside the button
     love.graphics.setColor(0, 0, 0) -- Black text
-    love.graphics.printf(self.text, self.x, self.y + (self.height / 2) - 6, self.width, "center")
-    
+    love.graphics.printf(self.text, self.x, text_y, self.width, "center")
+
     -- Reset color
     love.graphics.setColor(1, 1, 1)
 end

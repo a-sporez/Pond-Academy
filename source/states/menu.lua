@@ -14,27 +14,27 @@ local offset_x, offset_y = 48, 18
 --]]
 function Menu:enter()
     -- Load and store menu font
-    self.menu_font = love.graphics.newFont('assets/fonts/setbackt.ttf')
+    self.menu_font = love.graphics.newFont('assets/fonts/Trueno-wml2.otf', 24)
     love.graphics.setFont(self.menu_font)
 
     -- Create buttons for menu
     self.playButton = button.new(
-        centre_x - offset_x, 
-        centre_y - offset_y, 
-        96, 
-        36, 
-        "PLAY", 
+        centre_x - offset_x,
+        centre_y - offset_y,
+        96,
+        36,
+        "PLAY",
         function () state:enableIntro() end, -- Switch to intro state
         nil
     )
 
     self.exitButton = button.new(
-        centre_x - offset_x, 
-        centre_y + offset_y, 
-        96, 
-        36, 
-        "EXIT", 
-        love.event.quit, 
+        centre_x - offset_x,
+        centre_y + offset_y,
+        96,
+        36,
+        "EXIT",
+        love.event.quit,
         nil
     )
 end

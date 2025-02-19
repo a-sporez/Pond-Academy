@@ -26,7 +26,7 @@ function Archives:new()
     -- Initialize entities
     instance.critters = Critter:loadAll()
     instance.walls = {}  -- Store wall collision tiles
-    instance.bunny = Bunny:new(instance.tile_size * 12, instance.tile_size * 8)
+    instance.bunny = Bunny:new(instance.tile_size * 1, instance.tile_size * 4)
     instance.dialogue = nil  -- No dialogue at start
     instance.inDialogue = false  -- Dialogue state tracker
 
@@ -104,11 +104,11 @@ end
 --]]
 function Archives:update(dt)
     if self.inDialogue then
-        if self.dialogue then  -- Ensure dialogue is not nil
+        if self.dialogue and self.dialogue.update then
             self.dialogue:update(dt)
         else
-            print("[ERROR-archives] Dialogue object is nil while inDialogue is true!") -- Debugging message
-            self.inDialogue = false -- Prevent the game from being stuck
+            print("[ERROR-archives] Dialogue object is nil or missing update()!")
+            self.inDialogue = false
         end
     else
         self.bunny:update(dt)
@@ -127,7 +127,7 @@ function Archives:draw()
     for _, critter in ipairs(self.critters) do
         critter:draw()
     end
-    
+
     if self.inDialogue and self.dialogue then
         self.dialogue:draw()
     end
