@@ -3,7 +3,7 @@ Archives.__index = Archives
 
 -- Dependencies
 local sti = require('libraries.sti')  -- Simple Tiled Implementation for loading maps
-local Critter = require('source.entities.critter')  -- Critter entity management
+local Archivists = require('source.entities.archivists')  -- Critter entity management
 local Bunny = require('source.entities.bunny')  -- Player (bunny) entity management
 local Dialogue = require('source.dialogues.dialogue')  -- Dialogue system
 
@@ -24,18 +24,18 @@ function Archives:new()
     instance.tile_size = instance.map.tilewidth  -- Assuming square tiles (tilewidth == tileheight)
 
     -- Initialize entities
-    instance.critters = Critter:loadAll()
-    instance.walls = {}  -- Store wall collision tiles
+    instance.archivists = Archivists:loadAll()
+    instance.collidables = {}  -- Store wall collision tiles
     instance.bunny = Bunny:new(instance.tile_size * 1, instance.tile_size * 4)
     instance.dialogue = nil  -- No dialogue at start
     instance.inDialogue = false  -- Dialogue state tracker
 
     -- Debug: Print Critter loading
-    for _, critter in ipairs(instance.critters) do
+    for _, critter in ipairs(instance.archivists) do
         print("[DEBUG-archives] Loaded Critter:", critter.name, "at", critter.x, critter.y)
     end
 
-    instance:loadCollisionData()  -- Load walls
+    instance:loadCollisionData()  -- Load collidables
     return instance
 end
 
@@ -43,11 +43,11 @@ end
     Loads wall collision data from the Tiled map.
 --]]
 function Archives:loadCollisionData()
-    if self.map.layers["wall"] and self.map.layers["wall"].data then
-        for y = 1, #self.map.layers["wall"].data do
-            for x = 1, #self.map.layers["wall"].data[y] do
-                if self.map.layers["wall"].data[y][x] ~= 0 then
-                    table.insert(self.walls, { 
+    if self.map.layers["collidable"] and self.map.layers["collidable"].data then
+        for y = 1, #self.map.layers["collidable"].data do
+            for x = 1, #self.map.layers["collidable"].data[y] do
+                if self.map.layers["collidable"].data[y][x] ~= 0 then
+                    table.insert(self.collidables, { 
                         x = x * self.tile_size,
                         y = y * self.tile_size,
                         width = self.tile_size,
@@ -80,7 +80,7 @@ function Archives:isCollidingWithWall(x, y)
     end
 
     -- Get tile value at this position
-    local tile_id = self.map.layers["wall"].data[tile_y + 1] and self.map.layers["wall"].data[tile_y + 1][tile_x + 1] or nil
+    local tile_id = self.map.layers["collidable"].data[tile_y + 1] and self.map.layers["collidable"].data[tile_y + 1][tile_x + 1] or nil
 
     -- Debug: Print the tile ID Bunny is trying to step on
     if tile_id then
@@ -89,7 +89,7 @@ function Archives:isCollidingWithWall(x, y)
         print("[DEBUG-archives] No tile data found at this position.")
     end
 
-    -- If tile is not empty (not 0), it means it's a wall
+    -- If tile is not empty (not 0), it means it's a collidable
     if tile_id and tile_id ~= 0 then
         print("[DEBUG-archives] Collision detected at tile:", tile_x, tile_y, "Tile ID:", tile_id)
         return true
@@ -112,19 +112,19 @@ function Archives:update(dt)
         end
     else
         self.bunny:update(dt)
-        for _, critter in ipairs(self.critters) do
+        for _, critter in ipairs(self.archivists) do
             critter:update(dt)
         end
     end
 end
 
 --[[ 
-    Draws the scene, Bunny, and Critters. Also draws dialogue if active.
+    Draws the scene, Bunny, and archivists. Also draws dialogue if active.
 --]]
 function Archives:draw()
     self.map:draw()
     self.bunny:draw()
-    for _, critter in ipairs(self.critters) do
+    for _, critter in ipairs(self.archivists) do
         critter:draw()
     end
 
@@ -134,15 +134,15 @@ function Archives:draw()
 end
 
 --[[ 
-    Handles Bunny interaction with Critters.
+    Handles Bunny interaction with archivists.
     Starts dialogue if a Critter is interacted with.
 --]]
 function Archives:interact()
     if self.inDialogue then return end
 
-    for _, critter in ipairs(self.critters) do
+    for _, critter in ipairs(self.archivists) do
         if critter:isInteracted(self.bunny.pos_x, self.bunny.pos_y) then
-            local new_dialogue = Dialogue:new(critter.dialogue_ID)  -- ✅ Ensure dialogue_ID is used
+            local new_dialogue = Dialogue:new(critter.dialogue_ID)  -- Ensure dialogue_ID is used
 
             if new_dialogue then
                 self.dialogue = new_dialogue

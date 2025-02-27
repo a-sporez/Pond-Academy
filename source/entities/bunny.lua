@@ -12,6 +12,12 @@ function Bunny:new(pos_x, pos_y)
     instance.pos_x = math.floor(pos_x / 32) * 32
     instance.pos_y = math.floor(pos_y / 32) * 32
     instance.sprite = love.graphics.newImage("assets/sprites/bunny.png")
+    instance.width = instance.sprite:getWidth()
+    instance.height = instance.sprite:getHeight()
+
+    -- Scale factor for proper display
+    instance.scale_x = 32 / instance.width
+    instance.scale_y = 32 / instance.height
     return instance
 end
 

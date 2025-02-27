@@ -1,7 +1,7 @@
 local smug = {}
 
 smug.smug = {
-    text = "WWOOOOAAAHH!? What the fuck are you doing here!? What do you want from me!?",
+    text = "What do you want from me!?",
     options = {
         {text = "Smug!? What happened!?", next = 'node_1'},
         {text = "What is this place!?", next = 'node_2'},
