@@ -1,7 +1,7 @@
 local Bunny = {}
 Bunny.__index = Bunny
 
---[[ 
+--[[
     Creates a new Bunny entity.
     @param pos_x (number) - Initial X position (in pixels).
     @param pos_y (number) - Initial Y position (in pixels).
@@ -21,14 +21,14 @@ function Bunny:new(pos_x, pos_y)
     return instance
 end
 
---[[ 
+--[[
     Draws Bunny at its position.
 --]]
 function Bunny:draw()
     love.graphics.draw(self.sprite, self.pos_x, self.pos_y)
 end
 
---[[ 
+--[[
     Updates Bunny (currently unused but available for future behavior).
     @param dt (number) - Delta time.
 --]]
@@ -36,7 +36,7 @@ function Bunny:update(dt)
     -- Future movement animations or other logic can go here.
 end
 
---[[ 
+--[[
     Handles key input and attempts movement.
     @param key (string) - The key pressed.
     @param archives (table) - The Archives scene reference for collision checks.

@@ -1,7 +1,7 @@
 local Archivists = {}
 Archivists.__index = Archivists
 
---[[ 
+--[[
     Creates a new Archivist entity.
     @param name (string) - The name of the Archivist.
     @param pos_x (number) - X position in pixels.
@@ -29,7 +29,7 @@ function Archivists:new(name, pos_x, pos_y, sprite_path, dialogue_ID)
     return instance
 end
 
---[[ 
+--[[
     Draws the Archivist at its position.
 --]]
 function Archivists:draw()
@@ -37,15 +37,15 @@ function Archivists:draw()
     love.graphics.draw(self.sprite, self.pos_x, self.pos_y, 0, self.scale_x, self.scale_y)
 end
 
---[[ 
-    Updates the Archivist (placeholder for future AI behavior).
+--[[
+    Updates the Archivist (placeholder to avoid nil return).
     @param dt (number) - Delta time.
 --]]
 function Archivists:update(dt)
     -- Placeholder for future logic.
 end
 
---[[ 
+--[[
     Checks if Bunny is interacting with an Archivist.
     @param px (number) - Bunny's X position.
     @param py (number) - Bunny's Y position.
@@ -56,7 +56,7 @@ function Archivists:isInteracted(px, py)
     return distance < 32  -- Interaction within 1 tile
 end
 
---[[ 
+--[[
     Loads and returns all Archivists at fixed positions.
 --]]
 function Archivists:loadAll()

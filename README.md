@@ -11,23 +11,26 @@ In order to discover what happened to the human species, the player will have to
 ## Progress Map
 
 - [x] game state manager
-- [~] dialogue tree
+- [x] dialogue tree
 - [ ] attributes assignment
 - [ ] event outcomes
-- [ ] load background sprites
-- [ ] load critter sprites
+- [~] load background sprites
+- [~] load critter sprites
 - [ ] animations
 
 (...)
 
 Workspace Environment:
-install Love2D or link the source file to your IDE.
 
 [LÖVE2D source](https://www.love2d.org)
 
 LÖVE2D does not have an integrated environment, I use VS Code with git version control and the reference guide for coding.
 
 [Love 11.5 Reference API](https://love2d-community.github.io/love-api/)
+
+External Libraries:
+
+[Simple Tiled Implementation](https://github.com/karai17/Simple-Tiled-Implementation)
 
 ## Program Flow
 
@@ -52,22 +55,13 @@ Menu is the game state that contains the ui elements, since this project will be
 
 ---
 
-### *Running State*
+### *Intro State*
 
-Running State is where the main gameplay elements are initialized, for now it acts as a single game session initialized upon clicking the Play button.  The Dialogue module is the only thing it loads right now because I need to have some form of output to test the file structure.
-
-Variable attributes will be along 4 branches defined by the initial dialogue options, each tiered conditional to each other meaning the event defines theories who then define blame :
-
-- What happened? (events)
-- How is it possible? (theories)
-- Who is responsible? (blame)
-- What should we do about it? (outcomes)
+Intro State is where the main gameplay elements are initialized, for now it acts as a single game session initialized upon clicking the Play button and a test environment before replicating the file structure.
 
 #### **TODO:** *Create dictionary of Variable traits to be used as conditionals during the distribution of "ideological truths"*
 
 #### **TODO:** *Create method to distribute variable traits to each critter at the start of a game, use indexing of variable traits dictionary tables and arithmetic ranges with a math.random seed*
-
-#### **TODO:** *Create 2D scene for archives and spread buttons*
 
 [Running](source/states/running.lua)
 
@@ -98,3 +92,27 @@ For now I am planning to hardcode the core attributes of each critter through th
 Simple module to create buttons with a constructor, metatable and can be extended without messing around with the base method.
 
 - [Button](source/ui/button.lua)
+
+## Entities
+
+For each entities in this section variables are consistent and metatable is set for possible modding or extension of functionality but there is no unified entity class/method.
+
+### *Bunny*
+
+Main user entity and current end point for user input, dialogue interactions are directly tied to this module.
+
+- [Bunny](source/entities/bunny.lua)
+
+### *Archivists*
+
+Entities tied to a dialogue and loaded in a static position within the archives scene, smug, wiz, olive, bambi are the end point for each their own dialogue nodes however their dialogue initialization is contained within the Dialogue base class.
+
+- [Archivists](source/entities/archivists.lua)
+
+### *Critter*
+
+Base class for entities that the player can spawn using resource accumulated, separated from other entities to allow modding and expansion without affecting the core entities.
+
+#### **TODO:** *Attach to Intro game state and Test initialization*
+
+- [Critter](source/entities/critter.lua)
