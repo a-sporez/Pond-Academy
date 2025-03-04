@@ -12,23 +12,31 @@ olive.olive = {
 
 -- Define sub-nodes inside this module
 olive.node_1 = {
-    text = "This is Sub Node 1",
-    options = { {text = "Back", next = "olive"} }
+    text = "Node 1",
+    options = {
+        {text = "Back", next = "olive"}
+    }
 }
 
 olive.node_2 = {
     text = "This is Sub Node 2",
-    options = { {text = "Back", next = "olive"} }
+    options = {
+        {text = "Back", next = "olive"}
+    }
 }
 
 olive.node_3 = {
     text = "This is Sub Node 3",
-    options = { {text = "Back", next = "olive"} }
+    options = {
+        {text = "Back", next = "olive"}
+    }
 }
 
 olive.node_4 = {
     text = "This is Sub Node 4",
-    options = { {text = "Back", next = "olive"} }
+    options = {
+        {text = "Back", next = "olive"}
+    }
 }
 
 return olive

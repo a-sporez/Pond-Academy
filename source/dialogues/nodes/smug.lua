@@ -1,33 +1,79 @@
 local smug = {}
 
-smug.smug = {
-    text = "What do you want from me!? I'm busy working on Psychic Warfare strategies.",
+--[[
+smug.node_ = {
+    text = "Node ",
     options = {
-        {text = "Smug!? What happened!?", next = 'node_1'}, -- TODO: Add 
+        {text = "text", next = ''},
+        {text = "back", next = 'smug'}
+    }
+}
+--]]
+smug.smug = {
+    text = "What do you want from me!? I'm busy working on strategies.",
+    options = {
+        {text = "What happened!?", next = 'node_1'}, -- TODO: Add 
         {text = "What is this place!?", next = 'node_2'},
         {text = "I... can't remember my name, who... what am I?", next = 'node_3'},
-        {text = "Psychic Warfare, what is it?", next = 'node_4'}
     }
 }
 
 smug.node_1 = {
-    text = "SmugBUG! I have no idea who that smug person is but I hate them. You should ask them what happened. Now leave me alone!",
+    text = "You should ask someone who works here. Now leave me alone!",
     options = {
+        {text = "Work? What do you mean? What is this place?", next = 'node_2'},
         {text = "Back", next = 'smug'}
     }
 }
 
 smug.node_2 = {
-    text = "What do YOU MEAN!? YOU think that I KNOW?!? Look at me! I don't even have limbs, is this a joke?",
+    text = "What do YOU mean!? You think that I know?!? Look at me! I don't even have limbs, is this a joke?",
     options = {
+        {text = "I don't feel like joking, I am trying to understand...", next = 'node_2_B'},
+        {text = "It says on this sign that you are an Archivist", next = 'node_2_A_1'},
         {text = "Back", next = 'smug'}
     }
 }
 
-smug.node_3 = {
-    text = "Bwaahahhahaha get wreckt!! It's pretty obvious that you are some kind of angry bunny but really... deep down? Do you even know?",
+smug.node_2_B = {
+    text = "There is nothing to understand, it's implied.",
     options = {
-        {text = "Back", next = 'smug'}
+        {text = "Implied? What do you mean?", next = 'node_2_A_1b'},
+        {text = "back", next = 'smug'}
+    }
+}
+
+smug.node_2_A_1 = {
+    text = "Yes I am an Archivist.",
+    options = {
+        {text = "What does that even mean?", next = 'node_2_A_1b'},
+        {text = "back", next = 'smug'}
+    }
+}
+
+smug.node_2_A_1b = {
+    text = "I don't know, I thought you were supposed to know.",
+    options = {
+        {text = "I don't know anything. I am so confused right now.", next = 'node_3'},
+        {text = "Is this the Archives?", next = 'node_2_A_1c'},
+        {text = "back", next = 'smug'}
+    }
+}
+
+smug.node_2_A_1c = {
+    text = "Archives are implicitly part of the Psychic War.",
+    options = {
+        {text = "War? Are we in any danger?", next = 'node_5'},
+        {text = "Psychic War!? What is that?", next = 'node_4'},
+        {text = "back", next = 'smug'}
+    }
+}
+
+smug.node_3 = {
+    text = "Get wrecked!! It's pretty obvious that you are some kind of angry bunny. Do you even know?",
+    options = {
+        {text = "I am not angry, what are you talking about?", next = 'node_6'},
+        {text = "back", next = 'smug'}
     }
 }
 
@@ -52,7 +98,7 @@ smug.node_4_A_1 = {
     text = "Yeah it's implicit!",
     options = {
         {text = "What does that even mean?", next = 'node_2'},
-        {text = "Uhm... okay, nevermind.", next = 'node_4'}
+        {text = "back", next = 'smug'}
     }
 }
 
@@ -61,6 +107,47 @@ smug.node_4_B = {
     options = {
         {text = "Is this what happened? Reality has collapsed?", next = 'node_4_A_1'},
         {text = "thanks", next = 'smug'}
+    }
+}
+
+smug.node_5 = {
+    text = "Node 5",
+    options = {
+        {text = "Node 5_B", next = 'node_5_B'},
+        {text = "Why do you think I'm angry? WHat happened?", next = 'node_6'},
+        {text = "back", next = 'smug'}
+    }
+}
+
+smug.node_5_B = {
+    text = "Danger is always a possibility, you can always end up dead in the material plane.",
+    options = {
+        {text = "", next = ''},
+        {text = "back", next = 'smug'},
+    }
+}
+
+smug.node_6 = {
+    text = "You cerntainly look angry, but it doesn't matter in the end.",
+    options = {
+        {text = "Node 7", next = 'node_7'},
+        {text = "back", next = 'smug'}
+    }
+}
+
+smug.node_7 = {
+    text = "Node 7",
+    options = {
+        {text = "Node 8", next = 'node_8'},
+        {text = "back", next = 'smug'}
+    }
+}
+
+smug.node_8 = {
+    text = "Node 8",
+    options = {
+        {text = "text", next = ''},
+        {text = "back", next = 'smug'}
     }
 }
 

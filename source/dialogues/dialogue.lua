@@ -1,11 +1,11 @@
 local button = require "source.ui.button"
 
 -- Load dialogue nodes dynamically
-local critter_dialogues = {
-    smug = require "source.dialogues.nodes.smug",
+local entity_dialogues = {
+    smug  = require "source.dialogues.nodes.smug",
     olive = require "source.dialogues.nodes.olive",
     bambi = require "source.dialogues.nodes.bambi",
-    wiz = require "source.dialogues.nodes.wiz"
+    wiz   = require "source.dialogues.nodes.wiz"
 }
 
 local Dialogue = {}
@@ -17,20 +17,20 @@ local window_height = love.graphics.getHeight()
 
 --[[ 
     Creates a new Dialogue instance.
-    @param critter_name (string) - The critter being interacted with.
+    @param entity_name (string) - The entity being interacted with.
     @return (table) - New Dialogue instance.
 --]]
-function Dialogue:new(critter_name)
+function Dialogue:new(entity_name)
     local instance = setmetatable({}, Dialogue)
 
-    if not critter_dialogues[critter_name] then
-        print("[ERROR] Dialogue file for critter '" .. tostring(critter_name) .. "' not found!")
+    if not entity_dialogues[entity_name] then
+        print("[ERROR] Dialogue file for entity '" .. tostring(entity_name) .. "' not found!")
         return nil
     end
 
-    instance.critter_name = critter_name
-    instance.dialogue_tree = critter_dialogues[critter_name]
-    instance.current_node = critter_name
+    instance.entity_name = entity_name
+    instance.dialogue_tree = entity_dialogues[entity_name]
+    instance.current_node = entity_name
 
     -- Create text canvas
     local canvas_width = window_width - 40
@@ -83,12 +83,12 @@ function Dialogue:setNode(node_id)
         return
     end
 
-    -- Check if node exists inside the active critter's dialogue
+    -- Check if node exists inside the active entity's dialogue
     if self.dialogue_tree[node_id] then
         self.current_node = node_id
         self:createButtons()
     else
-        print("[ERROR] Dialogue node '" .. tostring(node_id) .. "' not found for critter:", self.critter_name)
+        print("[ERROR] Dialogue node '" .. tostring(node_id) .. "' not found for entity:", self.entity_name)
     end
 end
 
@@ -97,7 +97,7 @@ end
 --]]
 function Dialogue:draw()
     if not self.current_node or not self.dialogue_tree[self.current_node] then
-        print("[ERROR] Dialogue node '" .. tostring(self.current_node) .. "' not found for critter:", self.critter_name)
+        print("[ERROR] Dialogue node '" .. tostring(self.current_node) .. "' not found for entity:", self.entity_name)
         return
     end
 
