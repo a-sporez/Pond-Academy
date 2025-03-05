@@ -9,6 +9,8 @@ local Library  = require "source.scenes.library"
 
 local Running = {}
 
+local DRAW_SCALE = 1 -- global drawing scale on the canvas.
+
 --[[
     Called when the Running state is entered.
     Initializes the Archives scene immediately.
@@ -19,6 +21,11 @@ function Running:enter()
         library = Library:new()
     }
     self.current_scene = 'archives'
+
+    self.canvas = love.graphics.newCanvas(
+        love.graphics.getWidth() / DRAW_SCALE,
+        love.graphics.getHeight() / DRAW_SCALE
+    )
 end
 
 --[[
@@ -61,8 +68,24 @@ end
     Draws the current scene.
 --]]
 function Running:draw()
+    -- set the canvas as rendering target
+    love.graphics.setCanvas(self.canvas)
+    love.graphics.clear()
     if self.scenes[self.current_scene] then
         self.scenes[self.current_scene]:draw()
+    end
+    -- reset canvas to default
+    love.graphics.setCanvas()
+
+    love.graphics.push()
+    love.graphics.scale(DRAW_SCALE, DRAW_SCALE)
+    love.graphics.draw(self.canvas, 0, 0)
+    love.graphics.pop()
+
+    -- draw elements on top of the canvas
+    local scene = self.scenes[self.current_scene]
+    if scene and scene:getDialogue() then
+        scene:getDialogue():draw()
     end
 end
 
@@ -75,20 +98,7 @@ function Running:keypressed(key)
         self.scenes[self.current_scene]:keypressed(key)
     end
 end
---[[
-function Running:keyreleased(key)
-    if self.scenes[self.current_scene] then
-        self.scenes[self.current_scene]:keyreleased(key)
-    end
-end
 
-function Running:textinput(key)
-    if self.scenes[self.current_scene] then
-        self.scenes[self.current_scene]:textinput(key)
-    end
-end
---]]
--- NOT LINKED YET
 --[[
     Handles mouse input and passes it to the current scene.
     @param x (number) - Mouse X position.

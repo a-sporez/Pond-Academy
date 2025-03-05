@@ -2,10 +2,11 @@ local Archives = {}
 Archives.__index = Archives
 
 -- Dependencies
-local sti = require('libraries.sti')  -- Simple Tiled Implementation for loading maps
-local Archivists = require('source.entities.archivists')  -- Critter entity management
-local Bunny = require('source.entities.bunny')  -- Player (bunny) entity management
-local Dialogue = require('source.dialogues.dialogue')  -- Dialogue system
+local sti           = require('libraries.sti')  -- Simple Tiled Implementation for loading maps
+local Archivists    = require('source.entities.archivists')  -- Critter entity management
+local Bunny         = require('source.entities.bunny')  -- Player (bunny) entity management
+local Dialogue      = require('source.dialogues.dialogue')  -- Dialogue system
+local Camera        = require('source.utils.camera')
 
 -- Path to the Tiled map file
 local MAP_PATH = "assets/scenes/archives_map.lua"
@@ -19,9 +20,7 @@ function Archives:new(spawn_from)
     
     -- Load the map using STI
     instance.map = sti(MAP_PATH)
-
-    -- Get tile size dynamically from map metadata
-    instance.tile_size = instance.map.tilewidth  -- Assuming square tiles (tilewidth == tileheight)
+    instance.tile_size = instance.map.tilewidth
     instance.to_library = {
         x = instance.tile_size * 1,
         y = instance.tile_size * 17,
@@ -53,9 +52,12 @@ function Archives:new(spawn_from)
     return instance
 end
 
---[[ 
-    Loads wall collision data from the Tiled map.
---]]
+-- helper singleton to return the dialogue table and pass it along other modules.
+function Archives:getDialogue()
+    return self.dialogue
+end
+
+-- Loads wall collision data from the Tiled map.
 function Archives:loadCollisionData()
     local layers = {'collidable', 'water'} -- Water should also be treated as collidable
     for _, layer_name in ipairs(layers) do

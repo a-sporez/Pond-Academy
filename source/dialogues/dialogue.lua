@@ -1,4 +1,4 @@
-local button = require "source.ui.button"
+local button = require "source.utils.button"
 
 -- Load dialogue nodes dynamically
 local entity_dialogues = {
@@ -110,7 +110,7 @@ function Dialogue:draw()
     local canvas_height = text_height + 60  -- Adjust canvas height based on text
     local text_y = (canvas_height - text_height) / 6
 
-    local canvas_x = 20
+    local canvas_x = 10
     local canvas_y = 100
 
     -- Draw text onto the text canvas

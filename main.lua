@@ -2,6 +2,7 @@ local GameStateManager     = require('source.states.GameStateManager')
 local Menu                 = require('source.states.menu')
 
 function love.load()
+    love.graphics.setDefaultFilter('nearest', 'nearest', 0)
     GameStateManager:switch(Menu)
 end
 

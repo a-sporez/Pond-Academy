@@ -67,11 +67,11 @@ function button:draw()
     local text_y = self.y + (self.height - text_height) / 2
 
     -- Draw button background
-    love.graphics.setColor(1, 0.4, 0.4) -- Pink
+    love.graphics.setColor(145/255, 83/255, 173/255) -- Purple
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height, 5, 5)
 
     -- Draw text background
-    love.graphics.setColor(1, 0.8, 0.8) -- Light pastel pink
+    love.graphics.setColor(190/255, 150/255, 200/255) -- Light pastel purple
     love.graphics.rectangle("fill", self.x + 5, self.y + 5, self.width - 10, self.height - 10, 5, 5)
 
     -- Draw text centered inside the button

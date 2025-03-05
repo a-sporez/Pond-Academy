@@ -5,6 +5,7 @@ Library.__index = Library
 local sti        = require('libraries.sti')  -- Simple Tiled Implementation
 local Bunny      = require('source.entities.bunny')
 local Dialogue   = require('source.dialogues.dialogue')
+local Camera     = require('source.utils.camera')
 
 -- Path to the Tiled map file for this scene
 local MAP_PATH = 'assets/scenes/library_map.lua'
@@ -14,7 +15,7 @@ function Library:new(spawn_from)
 
     -- Load the map using STI
     instance.map = sti(MAP_PATH)
-    instance.tile_size = instance.map.tilewidth  -- Assuming square tiles
+    instance.tile_size = instance.map.tilewidth
     instance.to_archives = {
         x = instance.tile_size * 22,
         y = instance.tile_size * 0,
@@ -32,13 +33,18 @@ function Library:new(spawn_from)
 
     -- Initialize entities
     instance.collidables = {}
-    instance.bunny = Bunny:new(bunny_x, bunny_y)  -- Spawn in center
+    instance.bunny = Bunny:new(bunny_x, bunny_y)
     instance.dialogue = nil
     instance.inDialogue = false
 
     -- Load collision data
     instance:loadCollisionData()
     return instance
+end
+
+-- singleton to return dialogue table
+function Library:getDialogue()
+    return self.dialogue
 end
 
 function Library:loadCollisionData()

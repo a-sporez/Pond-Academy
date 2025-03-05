@@ -59,9 +59,7 @@ Menu is the game state that contains the ui elements, since this project will be
 
 Running State is where the main gameplay elements are initialized, Maps are initialized through this state so it acts as a scenes manager. This is not optimal but it should be sufficient for the scope of the project.
 
-#### **TODO:** *Create dictionary of Variable traits to be used as conditionals during the distribution of "ideological truths"*
-
-#### **TODO:** *Create method to distribute variable traits to each critter at the start of a game, use indexing of variable traits dictionary tables and arithmetic ranges with a math.random seed*
+`Running:switchScene(scence_name)`: switches scenes and passes the current scene along as string to recreate the scene with origin info.
 
 [Running](source/states/running.lua)
 
