@@ -1,0 +1,98 @@
+--[[
+    Running State Module
+    This state serves as the entry point for the game.
+    It transitions directly into the Archives scene.
+--]]
+
+local Archives = require "source.scenes.archives"  -- Include the Archives scene
+local Library  = require "source.scenes.library"
+
+local Running = {}
+
+--[[
+    Called when the Running state is entered.
+    Initializes the Archives scene immediately.
+--]]
+function Running:enter()
+    self.scenes = {
+        archives = Archives:new(),
+        library = Library:new()
+    }
+    self.current_scene = 'archives'
+end
+
+--[[
+    Switches between scenes within this state
+    @param scene_name (string) - The name of thescene to switch to
+--]]
+function Running:switchScene(scene_name)
+    if self.scenes[scene_name] then
+        print("[DEBUG-Running] Switching to scene: ", scene_name)
+        self.current_scene = scene_name
+    else
+        print("[DEBUG-Running] Scene not found: ", scene_name)
+    end
+end
+
+--[[
+    Updates the current scene.
+    @param dt (number) - Delta time since last frame.
+--]]
+function Running:update(dt)
+    if self.scenes[self.current_scene] then
+        self.scenes[self.current_scene]:update(dt)
+
+        if self.current_scene == 'archives' then
+            local next_scene = self.scenes['archives']:checkForSceneSwitch()
+            if next_scene then
+                self:switchScene(next_scene)
+            end
+        end
+    end
+end
+
+--[[
+    Draws the current scene.
+--]]
+function Running:draw()
+    if self.scenes[self.current_scene] then
+        self.scenes[self.current_scene]:draw()
+    end
+end
+
+--[[
+    Handles keyboard input and passes it to the current scene.
+    @param key (string) - The key pressed.
+--]]
+function Running:keypressed(key)
+    if self.scenes[self.current_scene] then
+        self.scenes[self.current_scene]:keypressed(key)
+    end
+end
+--[[
+function Running:keyreleased(key)
+    if self.scenes[self.current_scene] then
+        self.scenes[self.current_scene]:keyreleased(key)
+    end
+end
+
+function Running:textinput(key)
+    if self.scenes[self.current_scene] then
+        self.scenes[self.current_scene]:textinput(key)
+    end
+end
+--]]
+-- NOT LINKED YET
+--[[
+    Handles mouse input and passes it to the current scene.
+    @param x (number) - Mouse X position.
+    @param y (number) - Mouse Y position.
+    @param button (number) - Mouse button pressed.
+--]]
+function Running:mousepressed(x, y, button)
+    if self.scenes[self.current_scene] and self.scenes[self.current_scene].mousepressed then
+        self.scenes[self.current_scene]:mousepressed(x, y, button)
+    end
+end
+
+return Running

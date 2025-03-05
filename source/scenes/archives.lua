@@ -22,6 +22,12 @@ function Archives:new()
 
     -- 🔹 Get tile size dynamically from map metadata
     instance.tile_size = instance.map.tilewidth  -- Assuming square tiles (tilewidth == tileheight)
+    instance.to_library = {
+        x = instance.tile_size * 4,
+        y = instance.tile_size * 17,
+        width = instance.tile_size,
+        height = instance.tile_size
+    }
 
     -- Initialize entities
     instance.archivists = Archivists:loadAll()
@@ -96,6 +102,13 @@ function Archives:isCollidingWithWall(x, y)
     end
 
     return false
+end
+
+function Archives:checkForSceneSwitch()
+    if self.bunny.pos_x == self.to_library.x and self.bunny.pos_y == self.to_library.y then
+        return 'library'
+    end
+    return nil
 end
 
 --[[ 
