@@ -27,10 +27,17 @@ end
 --]]
 function Running:switchScene(scene_name)
     if self.scenes[scene_name] then
-        print("[DEBUG-Running] Switching to scene: ", scene_name)
+        print("[DEBUG-Running] Switching to scene:", scene_name)
         self.current_scene = scene_name
+
+        -- Recreate the scene with the origin info (optional for now)
+        if scene_name == "archives" then
+            self.scenes[scene_name] = Archives:new('library')  -- Indicate player is coming from library
+        elseif scene_name == "library" then
+            self.scenes[scene_name] = Library:new('archives')
+        end
     else
-        print("[DEBUG-Running] Scene not found: ", scene_name)
+        print("[ERROR-Running] Scene not found:", scene_name)
     end
 end
 
@@ -42,11 +49,10 @@ function Running:update(dt)
     if self.scenes[self.current_scene] then
         self.scenes[self.current_scene]:update(dt)
 
-        if self.current_scene == 'archives' then
-            local next_scene = self.scenes['archives']:checkForSceneSwitch()
-            if next_scene then
-                self:switchScene(next_scene)
-            end
+        -- Generalized scene transition check
+        local next_scene = self.scenes[self.current_scene]:checkForSceneSwitch()
+        if next_scene then
+            self:switchScene(next_scene)
         end
     end
 end

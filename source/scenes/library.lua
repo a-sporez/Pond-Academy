@@ -7,18 +7,32 @@ local Bunny      = require('source.entities.bunny')
 local Dialogue   = require('source.dialogues.dialogue')
 
 -- Path to the Tiled map file for this scene
-local MAP_PATH = "assets/scenes/library_map.lua"
+local MAP_PATH = 'assets/scenes/library_map.lua'
 
-function Library:new()
+function Library:new(spawn_from)
     local instance = setmetatable({}, Library)
 
     -- Load the map using STI
     instance.map = sti(MAP_PATH)
     instance.tile_size = instance.map.tilewidth  -- Assuming square tiles
+    instance.to_archives = {
+        x = instance.tile_size * 22,
+        y = instance.tile_size * 0,
+        width = instance.tile_size,
+        height = instance.tile_size
+    }
+
+    -- store default spawn location
+    local bunny_x, bunny_y = instance.tile_size * 22, instance.tile_size * 1
+    -- spawn_from is passed along in parameters
+    if spawn_from == 'archives' then
+        bunny_x = instance.to_archives.x
+        bunny_y = instance.to_archives.y + instance.tile_size
+    end
 
     -- Initialize entities
     instance.collidables = {}
-    instance.bunny = Bunny:new(instance.tile_size * 5, instance.tile_size * 5)  -- Spawn in center
+    instance.bunny = Bunny:new(bunny_x, bunny_y)  -- Spawn in center
     instance.dialogue = nil
     instance.inDialogue = false
 
@@ -28,7 +42,7 @@ function Library:new()
 end
 
 function Library:loadCollisionData()
-    local layers = {"collidable", "water"} -- Water should also be treated as collidable
+    local layers = {'collidable', 'water'} -- Water should also be treated as collidable
     for _, layer_name in ipairs(layers) do
         if self.map.layers[layer_name] and self.map.layers[layer_name].data then
             for y = 1, #self.map.layers[layer_name].data do
@@ -55,7 +69,7 @@ function Library:isCollidingWithWall(x, y)
         return true
     end
 
-    for _, layer_name in ipairs({"collidable", "water"}) do
+    for _, layer_name in ipairs({'collidable', 'water'}) do
         local tile_id = self.map.layers[layer_name].data[tile_y + 1] and self.map.layers[layer_name].data[tile_y + 1][tile_x + 1] or nil
         if tile_id and tile_id ~= 0 then
             return true
@@ -63,6 +77,13 @@ function Library:isCollidingWithWall(x, y)
     end
 
     return false
+end
+
+function Library:checkForSceneSwitch()
+    if self.bunny.pos_x == self.to_archives.x and self.bunny.pos_y == self.to_archives.y then
+        return 'archives'
+    end
+    return nil
 end
 
 function Library:update(dt)
@@ -91,7 +112,7 @@ end
 function Library:keypressed(key)
     if self.inDialogue and self.dialogue then
         self.dialogue:keypressed(key)
-        if key == "return" then
+        if key == 'return' then
             self.inDialogue = false
             self.dialogue = nil
         end

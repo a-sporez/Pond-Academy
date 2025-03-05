@@ -14,25 +14,33 @@ local MAP_PATH = "assets/scenes/archives_map.lua"
     Initializes the Archives scene.
     @return (table) - A new Archives scene instance.
 --]]
-function Archives:new()
+function Archives:new(spawn_from)
     local instance = setmetatable({}, Archives)
     
     -- Load the map using STI
     instance.map = sti(MAP_PATH)
 
-    -- 🔹 Get tile size dynamically from map metadata
+    -- Get tile size dynamically from map metadata
     instance.tile_size = instance.map.tilewidth  -- Assuming square tiles (tilewidth == tileheight)
     instance.to_library = {
-        x = instance.tile_size * 4,
+        x = instance.tile_size * 1,
         y = instance.tile_size * 17,
         width = instance.tile_size,
         height = instance.tile_size
     }
 
+    -- store default spawn location
+    local bunny_x, bunny_y = instance.tile_size * 1, instance.tile_size * 4
+    -- spawn_from is passed along in parameters
+    if spawn_from == 'library' then
+        bunny_x = instance.to_library.x
+        bunny_y = instance.to_library.y - instance.tile_size  -- Spawn above transition tile
+    end
+
     -- Initialize entities
     instance.archivists = Archivists:loadAll()
     instance.collidables = {}  -- Store wall collision tiles
-    instance.bunny = Bunny:new(instance.tile_size * 1, instance.tile_size * 4)
+    instance.bunny = Bunny:new(bunny_x, bunny_y)
     instance.dialogue = nil  -- No dialogue at start
     instance.inDialogue = false  -- Dialogue state tracker
 
@@ -49,56 +57,38 @@ end
     Loads wall collision data from the Tiled map.
 --]]
 function Archives:loadCollisionData()
-    if self.map.layers["collidable"] and self.map.layers["collidable"].data then
-        for y = 1, #self.map.layers["collidable"].data do
-            for x = 1, #self.map.layers["collidable"].data[y] do
-                if self.map.layers["collidable"].data[y][x] ~= 0 then
-                    table.insert(self.collidables, { 
-                        x = x * self.tile_size,
-                        y = y * self.tile_size,
-                        width = self.tile_size,
-                        height = self.tile_size
-                    })
+    local layers = {'collidable', 'water'} -- Water should also be treated as collidable
+    for _, layer_name in ipairs(layers) do
+        if self.map.layers[layer_name] and self.map.layers[layer_name].data then
+            for y = 1, #self.map.layers[layer_name].data do
+                for x = 1, #self.map.layers[layer_name].data[y] do
+                    if self.map.layers[layer_name].data[y][x] ~= 0 then
+                        table.insert(self.collidables, { 
+                            x = x * self.tile_size,
+                            y = y * self.tile_size,
+                            width = self.tile_size,
+                            height = self.tile_size
+                        })
+                    end
                 end
             end
         end
     end
 end
 
---[[ 
-    Checks if Bunny is colliding with a wall.
-    @param x (number) - X position to check.
-    @param y (number) - Y position to check.
-    @return (boolean) - True if colliding, false otherwise.
---]]
 function Archives:isCollidingWithWall(x, y)
-    -- Convert pixel position to tile index
     local tile_x = math.floor(x / self.tile_size)
     local tile_y = math.floor(y / self.tile_size)
 
-    -- Debug: Print the tile coordinates Bunny is trying to move to
-    print("[DEBUG-archives] Checking collision at tile:", tile_x, tile_y)
-
-    -- Stay within map bounds
     if tile_x < 0 or tile_x >= self.map.width or tile_y < 0 or tile_y >= self.map.height then
-        print("[DEBUG-archives] Out of bounds! Treating as collision.")
         return true
     end
 
-    -- Get tile value at this position
-    local tile_id = self.map.layers["collidable"].data[tile_y + 1] and self.map.layers["collidable"].data[tile_y + 1][tile_x + 1] or nil
-
-    -- Debug: Print the tile ID Bunny is trying to step on
-    if tile_id then
-        print("[DEBUG-archives] Tile ID at collision point:", tile_id)
-    else
-        print("[DEBUG-archives] No tile data found at this position.")
-    end
-
-    -- If tile is not empty (not 0), it means it's a collidable
-    if tile_id and tile_id ~= 0 then
-        print("[DEBUG-archives] Collision detected at tile:", tile_x, tile_y, "Tile ID:", tile_id)
-        return true
+    for _, layer_name in ipairs({'collidable', 'water'}) do
+        local tile_id = self.map.layers[layer_name].data[tile_y + 1] and self.map.layers[layer_name].data[tile_y + 1][tile_x + 1] or nil
+        if tile_id and tile_id ~= 0 then
+            return true
+        end
     end
 
     return false
@@ -178,8 +168,8 @@ function Archives:keypressed(key)
         self.dialogue:keypressed(key)
         
         -- Close dialogue if return is pressed
-        if key == "return" then
-            print("[DEBUG-archives] Closing dialogue with Return key")
+        if key == 'escape' then
+            print("[DEBUG-archives] Closing dialogue with escape key")
             self.inDialogue = false
             self.dialogue = nil
         end

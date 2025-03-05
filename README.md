@@ -55,9 +55,9 @@ Menu is the game state that contains the ui elements, since this project will be
 
 ---
 
-### *Intro State*
+### *Running State*
 
-Intro State is where the main gameplay elements are initialized, for now it acts as a single game session initialized upon clicking the Play button and a test environment before replicating the file structure.
+Running State is where the main gameplay elements are initialized, Maps are initialized through this state so it acts as a scenes manager. This is not optimal but it should be sufficient for the scope of the project.
 
 #### **TODO:** *Create dictionary of Variable traits to be used as conditionals during the distribution of "ideological truths"*
 
@@ -85,6 +85,8 @@ For now I am planning to hardcode the core attributes of each critter through th
 
 - [Dialogue](source/dialogues/dialogue.lua)
 
+---
+
 ## Utility
 
 ### *Button*
@@ -92,6 +94,8 @@ For now I am planning to hardcode the core attributes of each critter through th
 Simple module to create buttons with a constructor, metatable and can be extended without messing around with the base method.
 
 - [Button](source/ui/button.lua)
+
+---
 
 ## Entities
 
@@ -113,6 +117,17 @@ Entities tied to a dialogue and loaded in a static position within the archives 
 
 Base class for entities that the player can spawn using resource accumulated, separated from other entities to allow modding and expansion without affecting the core entities.
 
-#### **TODO:** *Attach to Intro game state and Test initialization*
+#### **TODO:** *Attach to Running game state and Test initialization*
 
 - [Critter](source/entities/critter.lua)
+
+---
+
+## Scenes
+
+### Archives
+
+Archives is the central scene where the dialogue with archivists occurs, resolving the dialogue with each archivist unlocks the associated scene. Each scene handles collision on its own using the tiled map table.
+
+- [Archives](source/scenes/archives.lua)
+- [archives_map](assets/scenes/archives_map.lua)

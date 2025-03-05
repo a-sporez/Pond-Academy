@@ -1,70 +1,84 @@
 local Archivists = {}
 Archivists.__index = Archivists
 
---[[
+-- Set a fixed tile size (assuming tiles are 32x32)
+local TILE_SIZE = 32
+
+--[[ 
     Creates a new Archivist entity.
     @param name (string) - The name of the Archivist.
-    @param pos_x (number) - X position in pixels.
-    @param pos_y (number) - Y position in pixels.
+    @param tile_x (number) - X position in **tiles**.
+    @param tile_y (number) - Y position in **tiles**.
     @param sprite_path (string) - Path to the Archivist's sprite.
     @param dialogue_ID (string) - The ID of the Archivist's dialogue tree.
     @return (table) - A new Archivist instance.
 --]]
-function Archivists:new(name, pos_x, pos_y, sprite_path, dialogue_ID)
+function Archivists:new(name, tile_x, tile_y, sprite_path, dialogue_ID)
     local instance = setmetatable({}, Archivists)
     instance.name = name
-    instance.pos_x = pos_x
-    instance.pos_y = pos_y
+
+    -- Store position in tiles
+    instance.tile_x = tile_x
+    instance.tile_y = tile_y
+
+    -- Convert tile position to pixel position
+    instance.pos_x = tile_x * TILE_SIZE
+    instance.pos_y = tile_y * TILE_SIZE
+
+    -- Store dialogue reference
     instance.dialogue_ID = dialogue_ID
 
-    -- Load and store sprite
+    -- Load sprite (no scaling needed)
     instance.sprite = love.graphics.newImage(sprite_path)
-    instance.width = instance.sprite:getWidth()
-    instance.height = instance.sprite:getHeight()
-
-    -- Scale factor for proper display
-    instance.scale_x = 32 / instance.width
-    instance.scale_y = 32 / instance.height
 
     return instance
 end
 
---[[
-    Draws the Archivist at its position.
+--[[ 
+    Draws the Archivist at its **tile-based** position.
 --]]
 function Archivists:draw()
     love.graphics.setColor(1, 1, 1) -- Reset color to default
-    love.graphics.draw(self.sprite, self.pos_x, self.pos_y, 0, self.scale_x, self.scale_y)
+    love.graphics.draw(self.sprite, self.pos_x, self.pos_y)
 end
 
---[[
-    Updates the Archivist (placeholder to avoid nil return).
+--[[ 
+    Updates the Archivist (placeholder for future behavior).
     @param dt (number) - Delta time.
 --]]
 function Archivists:update(dt)
-    -- Placeholder for future logic.
+    -- Placeholder for AI or animation logic
 end
 
---[[
-    Checks if Bunny is interacting with an Archivist.
-    @param px (number) - Bunny's X position.
-    @param py (number) - Bunny's Y position.
-    @return (boolean) - True if within interaction range.
+--[[ 
+    Checks if Bunny is in an **adjacent tile** (not just same tile).
+    @param px (number) - Bunny's X **pixel** position.
+    @param py (number) - Bunny's Y **pixel** position.
+    @return (boolean) - True if Bunny is in any of the 8 surrounding tiles.
 --]]
 function Archivists:isInteracted(px, py)
-    local distance = math.sqrt((px - self.pos_x)^2 + (py - self.pos_y)^2)
-    return distance < 32  -- Interaction within 1 tile
+    -- Convert Bunny's pixel position to tile coordinates
+    local bunny_tile_x = math.floor(px / TILE_SIZE)
+    local bunny_tile_y = math.floor(py / TILE_SIZE)
+
+    -- Calculate tile distance
+    local dx = math.abs(bunny_tile_x - self.tile_x)
+    local dy = math.abs(bunny_tile_y - self.tile_y)
+
+    -- Return true if Bunny is **in the same tile or any of the 8 surrounding tiles**
+    return dx <= 1 and dy <= 1
 end
 
---[[
-    Loads and returns all Archivists at fixed positions.
+--[[ 
+    Loads all Archivists using **tile-based** positions.
+    @return (table) - List of Archivist entities.
 --]]
 function Archivists:loadAll()
     return {
-        Archivists:new("smug", 32, 32, "assets/sprites/smug.png", "smug"),
-        Archivists:new("olive", 704, 32, "assets/sprites/olive.png", "olive"),
-        Archivists:new("bambi", 32, 512, "assets/sprites/bambi.png", "bambi"),
-        Archivists:new("wiz", 704, 512, "assets/sprites/wiz.png", "wiz")
+        Archivists:new("smug", 1, 1, "assets/sprites/smug.png", "smug"),
+        Archivists:new("olive", 22, 1, "assets/sprites/olive.png", "olive"),
+        Archivists:new("bambi", 1, 16, "assets/sprites/bambi.png", "bambi"),
+        Archivists:new("wiz", 22, 16, "assets/sprites/wiz.png", "wiz")
     }
 end
 
