@@ -14,7 +14,7 @@ local offset_x, offset_y = 48, 18
 --]]
 function Menu:enter()
     -- Load and store menu font
-    self.menu_font = love.graphics.newFont('assets/fonts/CyberphontA.ttf', 24)
+    self.menu_font = love.graphics.newFont('assets/fonts/04B_25.TTF', 24)
     love.graphics.setFont(self.menu_font)
 
     -- Create buttons for menu
