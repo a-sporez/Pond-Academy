@@ -69,19 +69,7 @@ Running State is where the main gameplay elements are initialized, Maps are init
 
 ### *Dialogue*
 
-Dialogue is a metamethod that establishes the method to handle dialogue tables. For now the tables are just placeholders to provide output. The "Archives" table is initialized directly in the constructor, it branches into the dialogue assigned to each critter.
-
-For now I am planning to hardcode the core attributes of each critter through the extended dialogue module attributed to them, so they will be largely arbitrarily defined based on the conditionals I set with the assigned attributes. It's supposed to remain vague and elusive but is not an actual attribute part of the game's logic... just an abstract definition of the method I used and how it would traslate into a core personality trait the player would easily recognize. Place to add one lore trait about each pondscum podcast character while leaving the actual personality attribution to be random.
-
-#### **TODO:** *Each node as a metatable of Dialogue representing a branching dialogue with a single critter. The intended output for the first build*
-
-#### **TODO:** *Create dictionary of "ideological truths"*
-
-#### **TODO:** *Create method to assign ideological truths to each critter based on conditionals*
-
-#### **TODO:** *Create dictionary of dialogue responses*
-
-#### **TODO:** *Draw splash and animated sprite for each critter under the dialogue and buttons*
+Dialogue is a metamethod that with a factory pattern to make and assign nodes with simple Lua table.
 
 - [Dialogue](source/dialogues/dialogue.lua)
 
