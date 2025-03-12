@@ -67,8 +67,8 @@ html, body
 <div id="wrapper">
 	<h1 id="title">Pond Academy</h1>
 	<div id="main">
-		<center style="margin-bottom:10px">use arrows to move, press "e" to interact.</center>
-		<center><canvas id="canvas" width="768" height="576" style="max-width:100%;background:#000;vertical-align:middle"></canvas></center>
+		<center style="margin-bottom:10px">use arrows to move, press "e" to interact when close to a critter.</center>
+		<center><canvas id="canvas" width="756" height="576" style="max-width:100%;background:#000;vertical-align:middle"></canvas></center>
 	</div>
 </div>
 <div id="footer">&copy; Spore &middot; Made using the <a href="https://love2d.org/" target="_blank">LÖVE Framework</a> (<a href="https://raw.githubusercontent.com/love2d/love/main/license.txt" target="_blank">License</a>) &middot; Packaged using <a href="https://schellingb.github.io/LoveWebBuilder/" target="_blank">LÖVE Web Builder</a></div>
@@ -107,13 +107,13 @@ var DoExecute = function()
 		Txt = Msg = ctx = canvas = null;
 		Module.canvas.focus();
 	};
-	setTimeout(function() { Module.run(['/']); }, 50);
+	setTimeout(function() { Module.run(['/p']); }, 50);
 };
 var DoLoad = function()
 {
 	Msg(TXT.LOAD);
 	var xhr = new XMLHttpRequest();
-	xhr.open('GET', 'Pond-Academy.js');
+	xhr.open('GET', 'index.js');
 	xhr.onprogress = function(e)
 	{
 		if (!e.lengthComputable || ctx.pCnt++ < 5) return;
