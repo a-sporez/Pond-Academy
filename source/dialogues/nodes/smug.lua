@@ -111,10 +111,10 @@ smug.node_4_B = {
 }
 
 smug.node_5 = {
-    text = "Node 5",
+    text = "Yes you are, do you think I can't see it?",
     options = {
-        {text = "Node 5_B", next = 'node_5_B'},
-        {text = "Why do you think I'm angry? WHat happened?", next = 'node_6'},
+        {text = "I don't understand what any of this means.", next = 'node_2_B'},
+        {text = "Why do you think I'm angry? What happened?", next = 'node_5_B'},
         {text = "back", next = 'smug'}
     }
 }
@@ -122,31 +122,31 @@ smug.node_5 = {
 smug.node_5_B = {
     text = "Danger is always a possibility, you can always end up dead in the material plane.",
     options = {
-        {text = "", next = ''},
+        {text = "Ok, now you are starting to spook me out.", next = 'node_7'},
         {text = "back", next = 'smug'},
     }
 }
 
 smug.node_6 = {
-    text = "You cerntainly look angry, but it doesn't matter in the end.",
+    text = "You certainly look angry.",
     options = {
-        {text = "Node 7", next = 'node_7'},
+        {text = "I'm not...", next = 'node_5'},
         {text = "back", next = 'smug'}
     }
 }
 
 smug.node_7 = {
-    text = "Node 7",
+    text = "You should be spooked, I want you to be spooked. Fear is not your enemy if you know where it comes from.",
     options = {
-        {text = "Node 8", next = 'node_8'},
+        {text = "Why would you want to do that?", next = 'node_8'},
         {text = "back", next = 'smug'}
     }
 }
 
 smug.node_8 = {
-    text = "Node 8",
+    text = "There are sociogenic tumours corrupting the pond, the work will never be achieved.",
     options = {
-        {text = "text", next = ''},
+        {text = "END", next = 'smug'},
         {text = "back", next = 'smug'}
     }
 }

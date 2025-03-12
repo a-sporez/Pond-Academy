@@ -1,5 +1,5 @@
-local button = require "source.ui.button"
-local state  = require "source.states.GameStateManager"
+local button = require 'source.ui.button'
+local state  = require 'source.states.GameStateManager'
 
 local Menu = {}
 local window_width = love.graphics.getWidth()
@@ -14,7 +14,7 @@ local offset_x, offset_y = 48, 18
 --]]
 function Menu:enter()
     -- Load and store menu font
-    self.menu_font = love.graphics.newFont('assets/fonts/Trueno-wml2.otf', 24)
+    self.menu_font = love.graphics.newFont('assets/fonts/CyberphontA.ttf', 24)
     love.graphics.setFont(self.menu_font)
 
     -- Create buttons for menu

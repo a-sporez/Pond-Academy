@@ -104,7 +104,7 @@ function Dialogue:draw()
     local node = self.dialogue_tree[self.current_node]
 
     local font = love.graphics.getFont()
-    local text_width, wrapped_text = font:getWrap(node.text, window_width - 60)
+    local text_width, wrapped_text = font:getWrap(node.text, window_width - 40)
     local text_height = #wrapped_text * font:getHeight()
 
     local canvas_height = text_height + 60  -- Adjust canvas height based on text
@@ -116,7 +116,7 @@ function Dialogue:draw()
     -- Draw text onto the text canvas
     love.graphics.setCanvas(self.text_canvas)
     love.graphics.clear()
-    love.graphics.printf(node.text, 10, text_y, window_width - 40, "center")
+    love.graphics.printf(node.text, 10, text_y, window_width - 40, 'center')
     love.graphics.setCanvas()
 
     -- Draw the text canvas
