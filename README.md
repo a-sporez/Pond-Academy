@@ -1,12 +1,12 @@
 # README
 
-... or don't... it'd be great if you did though.
+... or don't... it'd be great if you did read me though.
 
-## Synopsis
+## Credits
 
-The player awakens within the Pond Academy, a space station in the solar system created millions of years after humanity has been destroyed by an unknown event referred to as the "void". The station was build by transdimensional hyper-beings beyong human comprehension and the best they could do was recreate a few sentient conscious critters as accurately as possible after their science probe obtained the only remaining piece of human knowledge... a floating hard drive with all of the [Pondscum Podcast](https://www.youtube.com/@pondscumpodcast) on it.
-
-In order to discover what happened to the human species, the player will have to question those critters and determine what part they playedin the destruction of the human species.
+Artist: [Penusbmic](https://penusbmic.itch.io)
+Artist: [OscarTheSheep](https://www.twitch.tv/oscarthesheeptwitchver)
+Lead Developer: [Spore](https://github.com/a-sporez)
 
 ## Progress Map
 
@@ -28,7 +28,7 @@ LÖVE2D does not have an integrated environment, I use VS Code with git version 
 
 [Love 11.5 Reference API](https://love2d-community.github.io/love-api/)
 
-External Libraries:
+Libraries:
 
 [Simple Tiled Implementation](https://github.com/karai17/Simple-Tiled-Implementation)
 
@@ -72,6 +72,13 @@ Running State is where the main gameplay elements are initialized, Maps are init
 Dialogue is a metamethod that with a factory pattern to make and assign nodes with simple Lua table.
 
 - [Dialogue](source/dialogues/dialogue.lua)
+
+#### *Nodes*
+
+- [smug](source/dialogues/nodes/smug.lua)
+- [olive](source/dialogues/nodes/olive.lua)
+- [bambi](source/dialogues/nodes/bambi.lua)
+- [wiz](source/dialogues/nodes/wiz.lua)
 
 ---
 
