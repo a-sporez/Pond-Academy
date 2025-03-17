@@ -7,6 +7,11 @@ local entity_dialogues = {
     bambi = require "source.dialogues.nodes.bambi",
     wiz   = require "source.dialogues.nodes.wiz"
 }
+-- conditional nodes
+--[[
+    node_COND1 = Represents acceptance that we are all trying to understand.
+    (What are you not: everyone)
+--]]
 
 local Dialogue = {}
 Dialogue.__index = Dialogue

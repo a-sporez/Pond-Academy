@@ -1,5 +1,5 @@
 local olive = {}
-
+-- olive's premise is about good apples
 olive.olive = {
     text = "Olive speaks to you.",
     options = {

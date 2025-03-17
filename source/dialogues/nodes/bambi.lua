@@ -1,5 +1,5 @@
 local bambi = {}
-
+-- Bambi's premise is about the thrill of first times, first moments, the adventure time.
 bambi.bambi = {
     text = "Bambi speaks to you.",
     options = {

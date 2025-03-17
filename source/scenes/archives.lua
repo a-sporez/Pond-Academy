@@ -24,7 +24,7 @@ function Archives:new(spawn_from)
     instance.tile_size = instance.map.tilewidth  -- Assuming square tiles (tilewidth == tileheight)
     instance.to_library = {
         x = instance.tile_size * 1,
-        y = instance.tile_size * 17,
+        y = instance.tile_size * 16,
         width = instance.tile_size,
         height = instance.tile_size
     }

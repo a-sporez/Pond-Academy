@@ -75,10 +75,10 @@ end
 --]]
 function Archivists:loadAll()
     return {
-        Archivists:new("smug", 1, 1, "assets/sprites/smug.png", "smug"),
-        Archivists:new("olive", 22, 1, "assets/sprites/olive.png", "olive"),
-        Archivists:new("bambi", 1, 16, "assets/sprites/bambi.png", "bambi"),
-        Archivists:new("wiz", 22, 16, "assets/sprites/wiz.png", "wiz")
+        Archivists:new("smug", 2, 1, "assets/sprites/smug.png", "smug"),
+        Archivists:new("olive", 21, 1, "assets/sprites/olive.png", "olive"),
+        Archivists:new("bambi", 2, 16, "assets/sprites/bambi.png", "bambi"),
+        Archivists:new("wiz", 21, 16, "assets/sprites/wiz.png", "wiz")
     }
 end
 

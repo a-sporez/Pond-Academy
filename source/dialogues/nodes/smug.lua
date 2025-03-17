@@ -9,6 +9,7 @@ smug.node_ = {
     }
 }
 --]]
+-- smug's premise is mithridatism, introduction to Psychic Warfare.
 smug.smug = {
     text = "What do you want from me!? I'm busy working on strategies.",
     options = {
@@ -81,8 +82,40 @@ smug.node_4 = {
     text = "I have written 4 doctorate theses on psychic warfare and separated the field into two levels. What do you want to know?",
     options = {
         {text = "What is the first level?", next = 'node_4_A'},
-        {text = "What is the second level?", next = 'node_4_B'},
+        {text = "What is the second level?", next = 'node_4_F'},
+        {text = "What is the third level?", next = 'node_4_B'},
         {text = "back", next = "smug"}
+    }
+}
+
+smug.node_4_B = {
+    text = "I didn't mention a third level.",
+    options = {
+        {text = "Ah! But there IS a third level?", next = 'node_4_Bb'},
+        {text = "I don't understand! Did I do something wrong?", next = 'node_2_A_1b'},
+        {text = "back", next = 'smug'}
+    }
+}
+
+smug.node_4_Bb = {
+    text = "I am not going to correct you, or would you rather I correct you?",
+    options = {
+        {text = "I just want to understand what is happenning.", next = 'node_4_Bc'}
+    }
+}
+
+smug.node_4_Bc = {
+    text = "Don't we all want to understand what is happening?",
+    options = {
+        {text = "That's not what I mean, can you stop speaking in riddles?"},
+        {text = "True.", next = 'node_COND1'}
+    }
+}
+
+smug.node_COND1 = {
+    text = "Everyone but you. There is only everyone until there is you.",
+    options = {
+        {text = "...", next = 'smug'}
     }
 }
 
@@ -102,8 +135,8 @@ smug.node_4_A_1 = {
     }
 }
 
-smug.node_4_B = {
-    text = "PSYCHIC WAR is based on three premises. Shared reality has collapsed. Reality Collapse is Irreversible. Politics is Reality Agnostic ",
+smug.node_4_F = {
+    text = "PSYCHIC WAR is based on three premises. Shared reality has collapsed. Reality Collapse is Irreversible. Politics is Reality Agnostic.",
     options = {
         {text = "Is this what happened? Reality has collapsed?", next = 'node_4_A_1'},
         {text = "thanks", next = 'smug'}
@@ -144,9 +177,9 @@ smug.node_7 = {
 }
 
 smug.node_8 = {
-    text = "There are sociogenic tumours corrupting the pond, the work will never be achieved.",
+    text = "There are things corrupting reality, this reality, the only reality.",
     options = {
-        {text = "END", next = 'smug'},
+        {text = "What do you want me to do about it?", next = 'node_8_A'},
         {text = "back", next = 'smug'}
     }
 }
