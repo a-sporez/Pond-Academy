@@ -13,7 +13,7 @@ local TILE_SIZE = 32
     @param dialogue_ID (string) - The ID of the Archivist's dialogue tree.
     @return (table) - A new Archivist instance.
 --]]
-function Archivists:new(name, tile_x, tile_y, sprite_path, dialogue_ID)
+function Archivists:new(name, tile_x, tile_y, sprite_path, dialogue_ID, collidable)
     local instance = setmetatable({}, Archivists)
     instance.name = name
 
@@ -27,6 +27,7 @@ function Archivists:new(name, tile_x, tile_y, sprite_path, dialogue_ID)
 
     -- Store dialogue reference
     instance.dialogue_ID = dialogue_ID
+    instance.collidable = collidable == nil and true or collidable  -- default to true
 
     -- Load sprite (no scaling needed)
     instance.sprite = love.graphics.newImage(sprite_path)
@@ -75,10 +76,10 @@ end
 --]]
 function Archivists:loadAll()
     return {
-        Archivists:new("smug", 2, 1, "assets/sprites/smug.png", "smug"),
-        Archivists:new("olive", 21, 1, "assets/sprites/olive.png", "olive"),
-        Archivists:new("bambi", 2, 16, "assets/sprites/bambi.png", "bambi"),
-        Archivists:new("wiz", 21, 16, "assets/sprites/wiz.png", "wiz")
+        Archivists:new("smug", 2, 1, "assets/sprites/smug.png", "smug", true),
+        Archivists:new("olive", 21, 1, "assets/sprites/olive.png", "olive", true),
+        Archivists:new("bambi", 2, 16, "assets/sprites/bambi.png", "bambi", true),
+        Archivists:new("wiz", 21, 16, "assets/sprites/wiz.png", "wiz", true)
     }
 end
 

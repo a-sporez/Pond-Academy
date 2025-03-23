@@ -16,8 +16,8 @@ function Library:new(spawn_from)
     instance.map = sti(MAP_PATH)
     instance.tile_size = instance.map.tilewidth  -- Assuming square tiles
     instance.to_archives = {
-        x = instance.tile_size * 22,
-        y = instance.tile_size * 0,
+        x = instance.tile_size * 12,
+        y = instance.tile_size * 9,
         width = instance.tile_size,
         height = instance.tile_size
     }
@@ -42,7 +42,7 @@ function Library:new(spawn_from)
 end
 
 function Library:loadCollisionData()
-    local layers = {'collidable', 'water'} -- Water should also be treated as collidable
+    local layers = {'collidable'} -- add collidable layers here
     for _, layer_name in ipairs(layers) do
         if self.map.layers[layer_name] and self.map.layers[layer_name].data then
             for y = 1, #self.map.layers[layer_name].data do

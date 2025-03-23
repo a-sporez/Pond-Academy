@@ -24,7 +24,7 @@ function Archives:new(spawn_from)
     instance.tile_size = instance.map.tilewidth  -- Assuming square tiles (tilewidth == tileheight)
     instance.to_library = {
         x = instance.tile_size * 1,
-        y = instance.tile_size * 16,
+        y = instance.tile_size * 1,
         width = instance.tile_size,
         height = instance.tile_size
     }
@@ -34,7 +34,7 @@ function Archives:new(spawn_from)
     -- spawn_from is passed along in parameters
     if spawn_from == 'library' then
         bunny_x = instance.to_library.x
-        bunny_y = instance.to_library.y - instance.tile_size  -- Spawn above transition tile
+        bunny_y = instance.to_library.y + instance.tile_size  -- Spawn above transition tile
     end
 
     -- Initialize entities
@@ -85,8 +85,18 @@ function Archives:isCollidingWithWall(x, y)
     end
 
     for _, layer_name in ipairs({'collidable', 'water'}) do
-        local tile_id = self.map.layers[layer_name].data[tile_y + 1] and self.map.layers[layer_name].data[tile_y + 1][tile_x + 1] or nil
+        local tile_id = self.map.layers[layer_name].data[tile_y + 1]
+                        and self.map.layers[layer_name].data[tile_y + 1][tile_x + 1] or nil
         if tile_id and tile_id ~= 0 then
+            return true
+        end
+    end
+
+    -- Check collision with collidable archivists
+    for _, entity in ipairs(self.archivists) do
+        if entity.collidable and
+           math.floor(entity.pos_x / self.tile_size) == tile_x and
+           math.floor(entity.pos_y / self.tile_size) == tile_y then
             return true
         end
     end

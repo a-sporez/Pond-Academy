@@ -1,12 +1,21 @@
 local button = require "source.ui.button"
 
--- Load dialogue nodes dynamically
+-- Load dialogue nodes dynamically.
 local entity_dialogues = {
     smug  = require "source.dialogues.nodes.smug",
     olive = require "source.dialogues.nodes.olive",
     bambi = require "source.dialogues.nodes.bambi",
     wiz   = require "source.dialogues.nodes.wiz"
 }
+
+-- Assign large portrait sprites.
+local entity_portraits = {
+    smug  = love.graphics.newImage("assets/sprites/smug_large.png"),
+    olive = love.graphics.newImage("assets/sprites/olive_large.png"),
+    bambi = love.graphics.newImage("assets/sprites/bambi_large.png"),
+    wiz   = love.graphics.newImage("assets/sprites/wiz_large.png")
+}
+
 -- conditional nodes
 --[[
     node_COND1 = Represents acceptance that we are all trying to understand.
@@ -36,9 +45,10 @@ function Dialogue:new(entity_name)
     instance.entity_name = entity_name
     instance.dialogue_tree = entity_dialogues[entity_name]
     instance.current_node = entity_name
+    instance.large_sprite = entity_portraits[entity_name] or nil
 
     -- Create text canvas
-    local canvas_width = window_width - 40
+    local canvas_width = window_width - 80
     local canvas_height = 100
     instance.text_canvas = love.graphics.newCanvas(canvas_width, canvas_height)
 
@@ -108,21 +118,40 @@ function Dialogue:draw()
 
     local node = self.dialogue_tree[self.current_node]
 
+    -- Draw large background portrait
+    if self.large_sprite then
+        love.graphics.setColor(1, 1, 1, 1) -- light transparency
+        love.graphics.draw(self.large_sprite, 50, 60, 0, 2, 2) -- position and scale manually
+        love.graphics.setColor(1, 1, 1, 1)
+    end
+
     local font = love.graphics.getFont()
-    local text_width, wrapped_text = font:getWrap(node.text, window_width - 40)
+    local text_width, wrapped_text = font:getWrap(node.text, self.text_canvas:getWidth())
     local text_height = #wrapped_text * font:getHeight()
 
     local canvas_height = text_height + 60  -- Adjust canvas height based on text
     local text_y = (canvas_height - text_height) / 6
 
-    local canvas_x = 20
-    local canvas_y = 100
+    local canvas_x = 40
+    local canvas_y = 280
 
     -- Draw text onto the text canvas
     love.graphics.setCanvas(self.text_canvas)
     love.graphics.clear()
-    love.graphics.printf(node.text, 10, text_y, window_width - 40, 'center')
+    love.graphics.printf(node.text, 0, text_y, self.text_canvas:getWidth(), 'center')
     love.graphics.setCanvas()
+
+    -- Draw a subtle grey background behind the canvas (for visibility)
+    love.graphics.setColor(0, 0, 0, 0.4)
+    love.graphics.rectangle(
+        "fill",
+        canvas_x,
+        canvas_y,
+        self.text_canvas:getWidth(),
+        self.text_canvas:getHeight(),
+        20,
+        20
+    )
 
     -- Draw the text canvas
     love.graphics.setColor(1, 1, 1, 1)
