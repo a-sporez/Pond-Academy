@@ -27,7 +27,7 @@ function Library:new(spawn_from)
     -- spawn_from is passed along in parameters
     if spawn_from == 'archives' then
         bunny_x = instance.to_archives.x
-        bunny_y = instance.to_archives.y + instance.tile_size
+        bunny_y = instance.to_archives.y - instance.tile_size
     end
 
     -- Initialize entities

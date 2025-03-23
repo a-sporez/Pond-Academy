@@ -1,7 +1,7 @@
 local wiz = {}
 -- wiz premise is caution, the danger within, the game.
 wiz.wiz = {
-    text = "Wiz.",
+    text = "Whooa, why am I just text?",
     options = {
         {text = "Wiz", next = 'node_1'},
         {text = "Wiz", next = 'node_2'},

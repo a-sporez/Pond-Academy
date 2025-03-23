@@ -1,7 +1,9 @@
 local GameStateManager     = require('source.states.GameStateManager')
 local Menu                 = require('source.states.menu')
+local Running              = require('source.states.running')
 
 function love.load()
+    Running:initializeScenes()
     GameStateManager:switch(Menu)
 end
 

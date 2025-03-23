@@ -34,8 +34,9 @@ local window_height = love.graphics.getHeight()
     @param entity_name (string) - The entity being interacted with.
     @return (table) - New Dialogue instance.
 --]]
-function Dialogue:new(entity_name)
+function Dialogue:new(entity_name, triggers)
     local instance = setmetatable({}, Dialogue)
+    instance.triggers = triggers or {} -- conditional callbacks table
 
     if not entity_dialogues[entity_name] then
         print("[ERROR] Dialogue file for entity '" .. tostring(entity_name) .. "' not found!")
@@ -104,6 +105,10 @@ function Dialogue:setNode(node_id)
         self:createButtons()
     else
         print("[ERROR] Dialogue node '" .. tostring(node_id) .. "' not found for entity:", self.entity_name)
+    end
+    -- check if conditional node has been triggered.
+    if node_id == "node_COND1" and self.triggers and self.triggers["node_COND1"] then
+        self.triggers["node_COND1"]()
     end
 end
 

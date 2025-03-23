@@ -1,9 +1,9 @@
 local olive = {}
 -- olive's premise is about good apples
 olive.olive = {
-    text = "Olive speaks to you.",
+    text = "OH SHIT OH FUCK!! WHY IS MY FACE ALL FUCKED LIKE THAT?!^",
     options = {
-        {text = "Option 1", next = 'node_1'},
+        {text = "I don't know! Who are you?", next = 'node_1'},
         {text = "Option 2", next = 'node_2'},
         {text = "Option 3", next = 'node_3'},
         {text = "Option 4", next = 'node_4'}

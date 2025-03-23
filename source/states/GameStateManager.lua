@@ -11,43 +11,57 @@
 
 local GameStateManager = {}
 local currentGameState = nil
+local cachedStates = {} -- 💾 Persistent instances
 
 --[[
     Switches to a new game state.
-    @param newState (table) - The new state module to switch to.
+    @param newState (table or string) - The new state module or its name.
 --]]
 function GameStateManager:switch(newState)
-   if newState then
-        -- Call leave function of the current state (if exists)
-        if self.currentGameState and self.currentGameState.leave then
-            self.currentGameState:leave()
-        end
-        
-        -- Set the new state
-        self.currentGameState = newState
-        
-        -- Call enter function of the new state (if exists)
-        if self.currentGameState.enter then
-            self.currentGameState:enter()
-        end
-   else
-        -- Debugging message in case of invalid state switch
+    if not newState then
         print("[ERROR-GAMESTATE] Attempted to switch to nil state")
-   end
+        return
+    end
+
+    -- Unload current state
+    if self.currentGameState and self.currentGameState.leave then
+        self.currentGameState:leave()
+    end
+
+    -- Resolve string state references (like "menu" or "running")
+    local key = type(newState) == "string" and newState or nil
+    local state = nil
+
+    if key then
+        state = cachedStates[key]
+        if not state then
+            state = require("source.states." .. key)
+            cachedStates[key] = state
+        end
+    else
+        state = newState
+    end
+
+    self.currentGameState = state
+
+    -- Call enter if needed
+    if self.currentGameState and self.currentGameState.enter then
+        self.currentGameState:enter()
+    end
 end
 
 --[[ 
     Switches to the Intro game state.
 --]]
 function GameStateManager:enableIntro()
-    self:switch(require('source.states.running'))
+    self:switch("running")
 end
 
 --[[ 
     Switches to the Menu game state.
 --]]
 function GameStateManager:enableMenu()
-    self:switch(require('source.states.menu'))
+    self:switch("menu")
 end
 
 --[[ 

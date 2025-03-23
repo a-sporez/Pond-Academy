@@ -76,9 +76,9 @@ end
 --]]
 function Archivists:loadAll()
     return {
-        Archivists:new("smug", 2, 1, "assets/sprites/smug.png", "smug", true),
+        Archivists:new("smug", 13, 1, "assets/sprites/smug.png", "smug", true),
         Archivists:new("olive", 21, 1, "assets/sprites/olive.png", "olive", true),
-        Archivists:new("bambi", 2, 16, "assets/sprites/bambi.png", "bambi", true),
+        Archivists:new("bambi", 12, 15, "assets/sprites/bambi.png", "bambi", true),
         Archivists:new("wiz", 21, 16, "assets/sprites/wiz.png", "wiz", true)
     }
 end

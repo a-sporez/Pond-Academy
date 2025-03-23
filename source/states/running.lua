@@ -14,11 +14,17 @@ local Running = {}
     Initializes the Archives scene immediately.
 --]]
 function Running:enter()
-    self.scenes = {
-        archives = Archives:new(),
-        library = Library:new()
-    }
-    self.current_scene = 'archives'
+    -- nil
+end
+
+function Running:initializeScenes()
+    if not self.scenes then
+        self.scenes = {
+            archives = require("source.scenes.archives"):new(),
+            library = require("source.scenes.library"):new()
+        }
+        self.current_scene = 'archives'
+    end
 end
 
 --[[
@@ -71,10 +77,26 @@ end
     @param key (string) - The key pressed.
 --]]
 function Running:keypressed(key)
-    if self.scenes[self.current_scene] then
-        self.scenes[self.current_scene]:keypressed(key)
+    local scene = self.scenes[self.current_scene]
+
+    if key == "escape" then
+        if scene and scene.inDialogue then
+            -- Let the scene handle Escape (e.g., closing dialogue)
+            scene:keypressed(key)
+            return
+        else
+            -- Exit to menu only if no dialogue is active
+            print("[DEBUG-Running] Returning to menu from Running state.")
+            require("source.states.GameStateManager"):enableMenu()
+            return
+        end
+    end
+
+    if scene then
+        scene:keypressed(key)
     end
 end
+
 --[[
 function Running:keyreleased(key)
     if self.scenes[self.current_scene] then
