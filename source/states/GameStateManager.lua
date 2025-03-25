@@ -11,7 +11,7 @@
 
 local GameStateManager = {}
 local currentGameState = nil
-local cachedStates = {} -- 💾 Persistent instances
+local cachedStates = {}
 
 --[[
     Switches to a new game state.

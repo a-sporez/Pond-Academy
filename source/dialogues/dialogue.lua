@@ -18,8 +18,7 @@ local entity_portraits = {
 
 -- conditional nodes
 --[[
-    node_COND1 = Represents acceptance that we are all trying to understand.
-    (What are you not: everyone)
+    node_COND1 = (What are you not: everyone)
 --]]
 
 local Dialogue = {}
@@ -114,6 +113,7 @@ end
 
 --[[ 
     Draws the current dialogue text and buttons on screen.
+    THIS IS WHERE ALL THE MAGICK HAPPENS!
 --]]
 function Dialogue:draw()
     if not self.current_node or not self.dialogue_tree[self.current_node] then
@@ -126,19 +126,20 @@ function Dialogue:draw()
     -- Draw large background portrait
     if self.large_sprite then
         love.graphics.setColor(1, 1, 1, 1) -- light transparency
-        love.graphics.draw(self.large_sprite, 50, 60, 0, 2, 2) -- position and scale manually
+        love.graphics.draw(self.large_sprite, 50, 0, 0, 1, 1) -- position and scale manually
         love.graphics.setColor(1, 1, 1, 1)
     end
-
+    -- adjust text to centre and wrap around the canvas.
     local font = love.graphics.getFont()
-    local text_width, wrapped_text = font:getWrap(node.text, self.text_canvas:getWidth())
-    local text_height = #wrapped_text * font:getHeight()
+    local _, wrapped_text = font:getWrap(node.text, self.text_canvas:getWidth())
+    local line_height = font:getHeight()
+    local text_height = #wrapped_text * line_height
 
-    local canvas_height = text_height + 60  -- Adjust canvas height based on text
-    local text_y = (canvas_height - text_height) / 6
+    local canvas_height = self.text_canvas:getHeight()
+    local text_y = (canvas_height - text_height) / 2
 
     local canvas_x = 40
-    local canvas_y = 280
+    local canvas_y = 240
 
     -- Draw text onto the text canvas
     love.graphics.setCanvas(self.text_canvas)
@@ -175,10 +176,7 @@ function Dialogue:update(dt)
     print("[DEBUG] Updating dialogue:", self.current_node)
 end
 
---[[ 
-    Handles keyboard input to navigate dialogue.
-    @param key (string) - The key pressed by the player.
---]]
+-- handles keyboard input
 function Dialogue:keypressed(key)
     local node = self.dialogue_tree[self.current_node]
     
@@ -188,12 +186,7 @@ function Dialogue:keypressed(key)
     end
 end
 
---[[ 
-    Handles mouse input to navigate dialogue by clicking buttons.
-    @param x (number) - Mouse X position.
-    @param y (number) - Mouse Y position.
-    @param button (number) - Mouse button pressed.
---]]
+-- handles mouse input
 function Dialogue:mousepressed(x, y, button)
     for _, btn in ipairs(self.buttons) do
         btn:checkPressed(x, y, 5)

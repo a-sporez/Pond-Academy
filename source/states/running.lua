@@ -98,20 +98,6 @@ function Running:keypressed(key)
 end
 
 --[[
-function Running:keyreleased(key)
-    if self.scenes[self.current_scene] then
-        self.scenes[self.current_scene]:keyreleased(key)
-    end
-end
-
-function Running:textinput(key)
-    if self.scenes[self.current_scene] then
-        self.scenes[self.current_scene]:textinput(key)
-    end
-end
---]]
--- NOT LINKED YET
---[[
     Handles mouse input and passes it to the current scene.
     @param x (number) - Mouse X position.
     @param y (number) - Mouse Y position.

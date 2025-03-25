@@ -14,7 +14,7 @@ local offset_x, offset_y = 48, 18
 --]]
 function Menu:enter()
     -- Load and store menu font
-    self.menu_font = love.graphics.newFont('assets/fonts/04B_25.TTF', 24)
+    self.menu_font = love.graphics.newFont('assets/fonts/04B_25.TTF', 30)
     love.graphics.setFont(self.menu_font)
 
     -- Create buttons for menu
@@ -40,16 +40,13 @@ function Menu:enter()
 end
 
 --[[
-    Updates the menu state (currently unused).
+    nil
     @param dt (number) - Delta time since last frame.
 --]]
 function Menu:update(dt)
     -- No update logic needed for static menu
 end
 
---[[
-    Draws the menu state elements.
---]]
 function Menu:draw()
     love.graphics.print("Menu State", 10, 10)
 
