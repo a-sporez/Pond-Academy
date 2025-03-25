@@ -41,24 +41,24 @@ end
     @param key (string) - The key pressed.
     @param archives (table) - The Archives scene reference for collision checks.
 --]]
-function Bunny:keypressed(key, archives)
+function Bunny:keypressed(key, scene)
     local new_x = self.pos_x
     local new_y = self.pos_y
 
     if key == "up" then
-        new_y = self.pos_y - 32  -- Normal -Y movement (up)
+        new_y = self.pos_y - 32
     elseif key == "down" then
-        new_y = self.pos_y + 32  -- Normal +Y movement (down)
+        new_y = self.pos_y + 32
     elseif key == "left" then
         new_x = self.pos_x - 32
     elseif key == "right" then
         new_x = self.pos_x + 32
     elseif key == "e" then
-        archives:interact()
+        scene:interact()
         return
     end
 
-    if not archives:isCollidingWithWall(new_x, new_y) then
+    if not scene:isCollidingWithWall(new_x, new_y) then
         self.pos_x = new_x
         self.pos_y = new_y
         print("[DEBUG] Bunny moved to:", self.pos_x, self.pos_y)
@@ -66,5 +66,6 @@ function Bunny:keypressed(key, archives)
         print("[DEBUG] Collision detected! Move blocked.")
     end
 end
+
 
 return Bunny
