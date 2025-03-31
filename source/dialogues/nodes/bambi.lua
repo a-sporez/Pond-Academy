@@ -36,7 +36,7 @@ bambi.node_1c = {
 }
 
 bambi.node_1d = {
-    text = "...",
+    text = "... I suppose not. I can't seem to be able to state my name.",
     options = { -- BOOKMARK
         {text = "back", next = 'bambi'}
     }
