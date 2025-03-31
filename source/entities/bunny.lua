@@ -11,7 +11,7 @@ function Bunny:new(pos_x, pos_y)
     local instance = setmetatable({}, Bunny)
     instance.pos_x = math.floor(pos_x / 32) * 32
     instance.pos_y = math.floor(pos_y / 32) * 32
-    instance.sprite = love.graphics.newImage("assets/sprites/bunny.png")
+    instance.sprite = love.graphics.newImage('assets/entities/bunny.png')
     instance.width = instance.sprite:getWidth()
     instance.height = instance.sprite:getHeight()
 

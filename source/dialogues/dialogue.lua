@@ -10,10 +10,10 @@ local entity_dialogues = {
 
 -- Assign large portrait sprites.
 local entity_portraits = {
-    smug  = love.graphics.newImage("assets/sprites/smug_large.png"),
-    olive = love.graphics.newImage("assets/sprites/olive_large.png"),
-    bambi = love.graphics.newImage("assets/sprites/bambi_large.png"),
-    wiz   = love.graphics.newImage("assets/sprites/wiz_large.png")
+    smug  = love.graphics.newImage("assets/entities/smug_large.png"),
+    olive = love.graphics.newImage("assets/entities/olive_large.png"),
+    bambi = love.graphics.newImage("assets/entities/bambi_large.png"),
+    wiz   = love.graphics.newImage("assets/entities/wiz_large.png")
 }
 
 -- conditional nodes
@@ -179,7 +179,6 @@ end
 -- handles keyboard input
 function Dialogue:keypressed(key)
     local node = self.dialogue_tree[self.current_node]
-    
     if key >= '1' and key <= tostring(#node.options) then
         local choice_index = tonumber(key)
         self:setNode(node.options[choice_index].next)

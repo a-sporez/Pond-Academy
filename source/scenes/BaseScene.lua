@@ -66,12 +66,24 @@ function BaseScene:isCollidingWithWall(x, y)
 
     for _, layer_name in ipairs({'collidable', 'water'}) do
         local layer = self.map.layers[layer_name]
-        local row = self.layer and layer.data[tile_y + 1]
+        local row = layer and layer.data[tile_y + 1]
         local tile_id = row and row[tile_x + 1]
         if tile_id and tile_id ~= 0 then
             return true
         end
     end
+
+    -- Check for archivists or other collidable entities.
+    if self.archivists then
+        for _, archivist in ipairs(self.archivists) do
+            if archivist.collidable and
+               math.floor(archivist.pos_x / self.tile_size) == tile_x and
+               math.floor(archivist.pos_y / self.tile_size) == tile_y then
+                return true
+            end
+        end
+    end
+
     return false
 end
 
@@ -109,7 +121,7 @@ function BaseScene:keypressed(key)
             self.dialogue = nil
         end
     else
-        self.bunny:keypressed(key)
+        self.bunny:keypressed(key, self)
     end
 end
 
