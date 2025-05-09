@@ -167,7 +167,7 @@ ctx.textAlign = 'center';
 DoSetup();
 })()
 // Subtle timer: counts from start
-(function(){
+window.addEventListener("DOMContentLoaded", function() {
 	const countdownEl = document.getElementById('countdown');
 	const launchDate = new Date("2025-05-01T00:00:00Z"); // adjust as needed
 
@@ -191,7 +191,7 @@ DoSetup();
 
 	setInterval(updateTimer, 1000);
 	updateTimer();
-})();
+});
 
 </script>
 </html>
